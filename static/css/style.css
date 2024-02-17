@@ -1,0 +1,10 @@
+html {
+    height: 100vh;
+}
+body {
+    min-height: 100vh;
+}
+.container {
+    display: grid;
+    width: 100%;
+}

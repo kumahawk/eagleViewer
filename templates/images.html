@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}eagle viewer{% endblock %}
+{% block body %}
+<div class="container">
+    {% for img in list %}
+        <img src="/images/{{ img.id }}/{{ img.name }}.{{ img.ext }}">
+    {% endfor %}
+</div>
+{% endblock %}
