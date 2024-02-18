@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block title %}eagle viewer{% endblock %}
+{% block body %}
+<div class="container">
+    <img src="/images/{{- img.id -}}/{{- img.name -}}.{{- img.ext -}}" class="img-fluid" >
+</div>
+{% endblock %}
