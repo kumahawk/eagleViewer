@@ -1,4 +1,4 @@
-from flask import Flask,render_template,send_from_directory,redirect, session
+from flask import Flask,render_template,send_from_directory,redirect, session, request
 from eagleapi import Eagle
 from os import path
 from datetime import timedelta
@@ -25,13 +25,14 @@ def eagleimage(id):
 @app.route('/eagle', methods=['GET'])
 def eagle():
     eagle = Eagle(session.get('EagleLibraryPath'))
-    imgs = eagle.loadimages()
+    imgs = eagle.loadimages(folder=request.args.get('folder'), keyword=request.args.get('keyword'), tags=request.args.get('tags'))
+    folders = eagle.loadfolders()
     session['EagleLibraryPath'] = eagle.dump()
-    return render_template('images.html', list=imgs)
+    return render_template('images.html', list=imgs, folders=folders)
 
 @app.route('/', methods=['GET'])
 def index():
     return redirect('/eagle')
 
 if __name__ == "__main__":
-    app.run(port=8000, debug=True)
+    app.run(port=5000, debug=True)
