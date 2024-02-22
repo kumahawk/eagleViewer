@@ -62,19 +62,30 @@ class Eagle:
 
     def getimageinfo(self, id):
         img = self.getSession().get(Images, id)
-        return { key:getattr(img, key) for key in img.__dict__ if hasattr(img, key) }
+        i = { key:getattr(img, key) for key in img.__dict__ if hasattr(img, key) }
+        i['folders'] = [ f.name for f in img.folders_collection]
+        i['tags'] = [ t.name for t in img.tags_collection]
+        return i
+    
 
     def loadimages(self, n=100, offset=0, folder=None, keyword=None, tags=None):
         session = self.getSession()
         conditions = []
         if folder:
-            f = session.get(Folders, folder)
-            if f:
-                conditions.append(Images.folders_collection.contains(f))
+            if folder == ',':
+                conditions.append(~Images.folders_collection.any())
+            else:
+                for fid in folder.split(','):
+                    if fid:
+                        f = session.get(Folders, fid)
+                        if f:
+                            conditions.append(Images.folders_collection.contains(f))
         if tags:
-            tag = session.query(Tags).filter(Tags.name == tags).one_or_none()
-            if tag != None:
-                conditions.append(Images.tags_collection.contains(tag))
+            for t in tags.split(','):
+                if t:
+                    tag = session.query(Tags).filter(Tags.name == t).one_or_none()
+                    if tag != None:
+                        conditions.append(Images.tags_collection.contains(tag))
         if keyword:
             conditions.append(Images.annotation.like(f"%{keyword}%"))
         if conditions:
@@ -97,6 +108,8 @@ class Eagle:
                 i['thumbname'] = img.name + '.' + img.ext
             else:
                 i['thumbname'] = img.name + '_thumbnail.' + img.ext
+            i['folders'] = [ f.name for f in img.folders_collection]
+            i['tags'] = [ t.name for t in img.tags_collection]
             result.append(i)
         return result
 
@@ -132,6 +145,15 @@ class Eagle:
 
     def loadfolders(self):
         return self.getFolders(None, [])
+
+    def getfoldername(self, fid):
+        if not fid:
+            return '全画像'
+        elif fid == ',':
+            return '未選択'
+        else:
+            folder = self.getSession().get(Folders, fid)
+            return folder.name if folder else '全画像'
 
 if __name__ == "__main__":
     e = Eagle()

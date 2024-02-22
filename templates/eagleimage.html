@@ -2,6 +2,25 @@
 {% block title %}eagle viewer{% endblock %}
 {% block body %}
 <div class="container">
-    <img src="/images/{{- img.id -}}/{{- img.name -}}.{{- img.ext -}}" class="img-fluid" >
+    <div class="row">
+        <div class="column col-lg-9">
+            <img src="/images/{{- img.id -}}/{{- img.name -}}.{{- img.ext -}}" class="img-fluid" >
+        </div>
+        <div class="column side col-lg-3">
+            <div id="img_folders" class="list-group">
+                {% for fld in img.folders -%}
+                <div class="list-group-item list-group-item-info">{{ fld }}</div>
+                {% endfor -%}
+            </div>
+            <div id="img_tags" class="list-group">
+                {% for tag in img.tags -%}
+                <div class="list-group-item list-group-item-secondary">{{ tag }}</div>
+                {% endfor -%}
+            </div>
+            <div id="img_annotation" class="bg-primary text-wrap">
+                {{ img.annotation }}
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

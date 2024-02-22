@@ -27,8 +27,9 @@ def eagle():
     eagle = Eagle(session.get('EagleLibraryPath'))
     imgs = eagle.loadimages(folder=request.args.get('folder'), keyword=request.args.get('keyword'), tags=request.args.get('tags'))
     folders = eagle.loadfolders()
+    foldername = eagle.getfoldername(request.args.get('folder'))
     session['EagleLibraryPath'] = eagle.dump()
-    return render_template('images.html', list=imgs, folders=folders)
+    return render_template('images.html', list=imgs, folders=folders, foldername=foldername)
 
 @app.route('/', methods=['GET'])
 def index():

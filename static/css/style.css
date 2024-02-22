@@ -1,12 +1,38 @@
-html {
-    height: 100vh;
-}
-body {
-    min-height: 100vh;
-}
 .imagegrid {
     display: grid;
     width: 100%;
     grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-    gap: 10px;
+}
+form#search button {
+    flex-shrink: 0;
+}
+#thumb_grid {
+    #img_folders, #img_tags, #img_annotation {
+        display: none;
+    }
+}
+#folder-dropdown-menu {
+    width: 100px;
+}
+.has-dropdown-menu-sub::after {
+    content: "▶";
+    font-weight: 400;  
+    position: absolute;
+    top: 8px;
+    right: 5px;
+}
+.has-dropdown-menu-sub {
+    position: relative;
+}
+.dropdown-menu-sub {
+    position: absolute;
+    top: 0;
+    left: 110px;
+    width: 100%;
+    background-color: white;
+    visibility: hidden;
+}
+.has-dropdown-menu-sub:hover
+.dropdown-menu-sub {
+    visibility: visible;
 }

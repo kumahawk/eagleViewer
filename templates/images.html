@@ -3,18 +3,34 @@
 {% block navbar %}
 <div class="btn-group">
     <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-        フォルダ
+        {% if foldername %}{{ foldername }}{% else %}フォルダー{% endif %}
     </button>
-    <ul class="dropdown-menu">
+    <ul id="folder_dropdown" class="dropdown-menu">
+        <a class="dropdown-item" href="/eagle?folder=">全画像</a>
+        <a class="dropdown-item" href="/eagle?folder=,">未分類</a>
+        <li><hr class="dropdown-divider"></li>
         {% for f in folders -%}
-        <li><a class="dropdown-item" href="/eagle?folder={{- f.id -}}">{{- f.displayname -}}</a></li>
+        {% if f.children %}
+        <li class="has-dropdown-menu-sub">
+            <a class="dropdown-item" href="/eagle?folder={{- f.id -}}">{{- f.name -}}</a>
+            <ul class="dropdown-menu-sub">
+            {% for ff in f.children %}
+                <a class="dropdown-item" href="/eagle?folder={{- ff.id -}}">{{- ff.name -}}</a>
+            {% endfor %}
+            </ul>
+        </li>
+        {% else %}
+        <li>
+            <a class="dropdown-item" href="/eagle?folder={{- f.id -}}">{{- f.name -}}</a>
+        </li>
+        {% endif %}
         {% endfor %}
     </ul>
 </div>
 <div>
-<form class="d-flex" role="search" method="get">
-    <input class="form-control" type="input" placeholder="tags" aria-label="tags" name="tags">
-    <input class="form-control" type="input" placeholder="keyword" aria-label="keyword" name="keyword">
+<form id="search" class="d-flex" role="search" method="get">
+    <input class="form-control" type="input" placeholder="タグ" aria-label="tags" name="tags">
+    <input class="form-control" type="input" placeholder="キーワード" aria-label="keyword" name="keyword">
     <button class="btn btn-outline-success" type="submit">検索</button>
 </form>
 </div>
@@ -22,9 +38,26 @@
 {% block body %}
 <div class="container text-center">
 <div class="row row-cols-auto">
-    {% for img in list -%}
-    <div class="col"><a href="/eagle/{{- img.id -}}"><img class="img-thumbnail" src="/images/{{- img.id -}}/{{- img.thumbname -}}" width="{{- img.thumbwidth -}}px" height="{{- img.thumbheight -}}px"></a></div>
-    {%- endfor %}
+{% for img in list -%}
+<div id="thumb_grid" class="col focus-ring" tabindex="1" onclick="location.href='/eagle/{{- img.id -}}{{- args -}}'">
+    <img id="img_thumbnail" class="img-thumbnail" src="/images/{{- img.id -}}/{{- img.thumbname -}}" width="{{- img.thumbwidth -}}px" height="{{- img.thumbheight -}}px">
+    <ul id="img_folders">
+        {% for fld in img.folders -%}
+        <li>{{ fld }}</li>
+        {% endfor -%}
+    </ul>
+    <ul id="img_tags">
+        {% for tag in img.tags -%}
+        <li>{{ tag }}</li>
+        {% endfor -%}
+    </ul>
+    <div id="img_annotation">
+        {{ img.annotation }}
+    </div>
+</div>
+{% endfor -%}
 </div>
 </div>
+{% endblock %}
+{% block script %}
 {% endblock %}
