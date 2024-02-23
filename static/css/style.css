@@ -6,10 +6,11 @@
 form#search button {
     flex-shrink: 0;
 }
-#thumb_grid {
-    #img_folders, #img_tags, #img_annotation {
-        display: none;
-    }
+.img_slide {
+    display: none;
+}
+.img_grid {
+    display: block;
 }
 #folder-dropdown-menu {
     width: 100px;

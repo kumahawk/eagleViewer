@@ -1,8 +1,9 @@
 {% extends "base.html" %}
 {% block title %}eagle viewer{% endblock %}
 {% block navbar %}
+<header>
 <div class="btn-group">
-    <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+    <button type="button" class="btn btn-primary" aria-expanded="false">
         {% if foldername %}{{ foldername }}{% else %}フォルダー{% endif %}
     </button>
     <ul id="folder_dropdown" class="dropdown-menu">
@@ -26,6 +27,9 @@
         {% endif %}
         {% endfor %}
     </ul>
+    <button type="button" class="btn btn-primary" aria-expanded="false" onclick="flipScreenMode()">
+        切替
+    </button>
 </div>
 <div>
 <form id="search" class="d-flex" role="search" method="get">
@@ -34,30 +38,96 @@
     <button class="btn btn-outline-success" type="submit">検索</button>
 </form>
 </div>
+</header>
 {% endblock %}
 {% block body %}
-<div class="container text-center">
-<div class="row row-cols-auto">
+<div id="eagle_main" class="container text-center">
+<div id="img_grids" class="row row-cols-auto">
 {% for img in list -%}
-<div id="thumb_grid" class="col focus-ring" tabindex="1" onclick="location.href='/eagle/{{- img.id -}}{{- args -}}'">
-    <img id="img_thumbnail" class="img-thumbnail" src="/images/{{- img.id -}}/{{- img.thumbname -}}" width="{{- img.thumbwidth -}}px" height="{{- img.thumbheight -}}px">
-    <ul id="img_folders">
-        {% for fld in img.folders -%}
-        <li>{{ fld }}</li>
-        {% endfor -%}
-    </ul>
-    <ul id="img_tags">
-        {% for tag in img.tags -%}
-        <li>{{ tag }}</li>
-        {% endfor -%}
-    </ul>
-    <div id="img_annotation">
-        {{ img.annotation }}
-    </div>
+<div id="img_thumb_{{- img.id -}}" data-id="{{- img.id -}}" class="col" tabindex="1">
+    <a onclick='flipScreenMode("{{- img.id -}}");'><img class="img-thumbnail" src="/images/{{- img.id -}}/{{- img.thumbname -}}" width="{{- img.thumbwidth -}}px" height="{{- img.thumbheight -}}px"></a>
 </div>
 {% endfor -%}
 </div>
+<div id="img_slide" class="carousel slide" data-ride="carousel">
+<div class="carousel-inner">
+    {% for img in list -%}
+    <div id="img_slide_{{- img.id -}}" class="carousel-item{% if img.id == targetid %} active{% endif %}">
+        <div class="row bg-secondary-subtle">
+            <div class="column col-lg-9 text-center">
+                </a><img class="img-thumbnail" src="/images/{{- img.id -}}/{{- img.name -}}.{{- img.ext -}}"></a>
+            </div>
+            <div class="column side col-lg-3 img_info">
+                <div class="list-group img_folders">
+                    {% for fld in img.folders -%}
+                    <div class="list-group-item list-group-item-info">{{ fld }}</div>
+                    {% endfor -%}
+                </div>
+                <div class="list-group">
+                    {% for tag in img.tags -%}
+                    <div class="list-group-item list-group-item-secondary">{{ tag }}</div>
+                    {% endfor -%}
+                </div>
+                <div class="bg-primary text-wrap">
+                    {{ img.annotation }}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor -%}
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#img_slide" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#img_slide" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+    </div>    
 </div>
 {% endblock %}
 {% block script %}
+function flipScreenMode(id = null) {
+    const slide = document.getElementById('img_slide');
+    const grid = document.getElementById('img_grids');
+    if(grid.style.display == 'none') {
+        var e = null;
+        if(id) {
+            e = document.getElementById('img_thumb_' + id);
+        }
+        if( ! e) { 
+            e = slide.querySelector(".carousel-item.active");
+        }
+        slide.style.display = 'none';        
+        grid.style.display = 'block';
+        if(e) {
+            e.focus();
+        }
+    }
+    else {
+        const a = document.activeElement;
+        var e = null;
+        if(id) {
+            e = document.getElementById('img_slide_' + id);
+        }
+        if(! e) {
+            let a = document.activeElement;
+            if(a && a.id.startsWith('img_thumb_')) {
+                e = document.getElementById('img_slide_' + a.id.substr('img_thumb_'.length));
+            }
+        }
+        for(let a of slide.querySelectorAll('.active')) {
+            a.classList.toggle('active', false);
+        }
+        if(! e) {
+            e = slide.querySelector('.carousel-item');
+        }
+        if(e) {
+            e.classList.toggle('active', true);
+        }
+        grid.style.display = 'none';
+        slide.style.display = 'block';
+    }
+}
 {% endblock %}
