@@ -25,10 +25,11 @@ def eagle():
     session['EagleLibraryPath'] = eagle.dump()
     return render_template('images.html', list=imgs, folders=folders, foldername=foldername)
 
-@app.route('/eagle/fetch/<int:num>', methods=['GET'])
-def eagle_fetch(num):
+@app.route('/eagle/fetch', methods=['GET'])
+@app.route('/eagle/fetch/<id>', methods=['GET'])
+def eagle_fetch(id = None):
     eagle = Eagle(session.get('EagleLibraryPath'))
-    imgs = eagle.loadimages(100,offset=num,folder=request.args.get('folder'), keyword=request.args.get('keyword'), tags=request.args.get('tags'))
+    imgs = eagle.loadimages(100,skipuntil=id,folder=request.args.get('folder'), keyword=request.args.get('keyword'), tags=request.args.get('tags'))
     session['EagleLibraryPath'] = eagle.dump()
     json = {"images":imgs}
     return jsonify(json)

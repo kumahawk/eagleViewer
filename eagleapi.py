@@ -100,6 +100,8 @@ class Eagle:
                     tag = session.query(Tags).filter(Tags.name == t).one_or_none()
                     if tag != None:
                         conditions.append(Images.tags_collection.contains(tag))
+        if skipuntil:
+            conditions.append(Images.id < skipuntil)
         if keyword:
             conditions.append(Images.annotation.like(f"%{keyword}%"))
         if conditions:
@@ -108,10 +110,6 @@ class Eagle:
             imgs = session.query(Images).order_by(desc(Images.id)).offset(offset).limit(n)
         result = []
         for img in imgs:
-            if skipuntil != None:
-                if img.id == skipuntil:
-                    skipuntil = None
-                continue
             i = {key:getattr(img, key) for key in ('id','name','ext','noThumbnail','annotation','star')}
             if img.width < img.height:
                 height = min(img.height, MAXMETRIC)

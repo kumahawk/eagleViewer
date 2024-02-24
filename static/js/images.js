@@ -111,8 +111,16 @@ const templ = Handlebars.compile(
 
 function fillnext() {
     let e = document.getElementById('img_next');
-    num = e.parentNode.children.length;
-    fetch("/eagle/fetch/" + (num-1) + location.search)
+    p = e.previousElementSibling;
+    var id = null;
+    if(p && p.id.startsWith('img_')) {
+        id = p.id.substr('img_'.length);
+        url = "/eagle/fetch/" + id + location.search;
+    }
+    else {
+        url = "/eagle/fetch" + location.search;
+    }
+    fetch(url)
     .then(function(res){
         return res.json();
     })
