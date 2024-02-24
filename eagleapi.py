@@ -23,17 +23,14 @@ class Eagle:
             self._session = Session(engine)
         return self._session
     
-    def getFolders(self, pid, parents):
+    def getFolders(self, pid):
         session = self.getSession()
         output = []
         for f in session.query(Folders).filter(Folders.parent == pid):
-            path = [*parents, f.name]
             output += [{"id": f.id,
                         "name":f.name,
-                        "displayname":"|" * len(parents) + f.name,
-                        "path": "/".join(path)
+                        "children": self.getFolders(f.id)
                         }]
-            output += self.getFolders(f.id, path)
         return output
 
     
@@ -160,13 +157,15 @@ class Eagle:
         return tags.values()
 
     def loadfolders(self):
-        return self.getFolders(None, [])
+        return self.getFolders(None)
 
     def getfoldername(self, fid):
         if not fid:
             return '全画像'
         elif fid == ',':
             return '未選択'
+        elif fid.startswith('star'):
+            return '星' + fid[len('star'):]
         else:
             folder = self.getSession().get(Folders, fid)
             return folder.name if folder else '全画像'

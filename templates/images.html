@@ -1,21 +1,22 @@
 {% extends "base.html" %}
 {% block title %}eagle viewer{% endblock %}
 {% block navbar %}
-<div class="nav-item dropdown">
-    <button type="button" class="btn btn-primary" aria-expanded="false">
+<div class="nav-item">
+    <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
         {% if foldername %}{{ foldername }}{% else %}フォルダー{% endif %}
     </button>
     <ul id="folder_dropdown" class="dropdown-menu">
         <li><a class="dropdown-item" href="/eagle?folder=">全画像</a></li>
         <li><a class="dropdown-item" href="/eagle?folder=,">未分類</a></li>
         <li class="has-dropdown-menu-sub">
-            <a class="dropdown-item" href="/eagle?folder=STAR">星</a>
+            <a class="dropdown-item" href="/eagle?folder=star">星</a>
             <ul class="dropdown-menu-sub">
-            <a class="dropdown-item" href="/eagle?folder=STAR5">星5</a>
-            <a class="dropdown-item" href="/eagle?folder=STAR4">星4</a>
-            <a class="dropdown-item" href="/eagle?folder=STAR3">星3</a>
-            <a class="dropdown-item" href="/eagle?folder=STAR2">星2</a>
-            <a class="dropdown-item" href="/eagle?folder=STAR1">星1</a>
+            <a class="dropdown-item" href="/eagle?folder=star5">星5</a>
+            <a class="dropdown-item" href="/eagle?folder=star4">星4</a>
+            <a class="dropdown-item" href="/eagle?folder=star3">星3</a>
+            <a class="dropdown-item" href="/eagle?folder=star2">星2</a>
+            <a class="dropdown-item" href="/eagle?folder=star1">星1</a>
+            <a class="dropdown-item" href="/eagle?folder=star0">星0</a>
             </ul>
         </li>
         <li><hr class="dropdown-divider"></li>
