@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 {% block title %}eagle viewer{% endblock %}
 {% block navbar %}
-<header>
 <div class="btn-group">
     <button type="button" class="btn btn-primary" aria-expanded="false">
         {% if foldername %}{{ foldername }}{% else %}フォルダー{% endif %}
@@ -31,14 +30,10 @@
         切替
     </button>
 </div>
-<div>
 <form id="search" class="d-flex" role="search" method="get">
-    <input class="form-control" type="input" placeholder="タグ" aria-label="tags" name="tags">
     <input class="form-control" type="input" placeholder="キーワード" aria-label="keyword" name="keyword">
     <button class="btn btn-outline-success" type="submit">検索</button>
 </form>
-</div>
-</header>
 {% endblock %}
 {% block body %}
 <div id="eagle_main" class="container">

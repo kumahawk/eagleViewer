@@ -111,18 +111,14 @@ const templ = Handlebars.compile(
 
 function fillnext() {
     let e = document.getElementById('img_next');
-    let a = document.querySelector(":has(+ #img_next)");
-    if(a && a.id.startsWith('img_')) {
-        id = a.id.substr('img_'.length)
-        num = e.parentNode.children.length;
-        fetch("/eagle/fetch/" + id + '/' + num + location.search)
-        .then(function(res){
-            return res.json();
-        })
-        .then(function(json) {
-            for(i of json.images) {
-                e.insertAdjacentHTML('beforebegin', templ(i));
-            }
-        })
-    }
+    num = e.parentNode.children.length;
+    fetch("/eagle/fetch/" + (num-1) + location.search)
+    .then(function(res){
+        return res.json();
+    })
+    .then(function(json) {
+        for(i of json.images) {
+            e.insertAdjacentHTML('beforebegin', templ(i));
+        }
+    })
 }
