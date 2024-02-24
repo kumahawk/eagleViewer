@@ -6,12 +6,20 @@
 form#search button {
     flex-shrink: 0;
 }
-.img_slide {
+
+.img_info {
     display: none;
 }
-.img_grid {
+
+.carousel-item .img_info {
     display: block;
 }
+
+:not(.carousel) > .carousel-control-prev,
+:not(.carousel) > .carousel-control-next {
+    display: none;
+}
+
 #folder-dropdown-menu {
     width: 100px;
 }

@@ -41,93 +41,133 @@
 </header>
 {% endblock %}
 {% block body %}
-<div id="eagle_main" class="container text-center">
-<div id="img_grids" class="row row-cols-auto">
+<div id="eagle_main" class="container">
+<div id="img_slide"><!-- carousel slide -->
+<div id="img_grids" class="row row-cols-auto"><!-- carousel-inner -->
 {% for img in list -%}
-<div id="img_thumb_{{- img.id -}}" data-id="{{- img.id -}}" class="col" tabindex="1">
-    <a onclick='flipScreenMode("{{- img.id -}}");'><img class="img-thumbnail" src="/images/{{- img.id -}}/{{- img.thumbname -}}" width="{{- img.thumbwidth -}}px" height="{{- img.thumbheight -}}px"></a>
-</div>
-{% endfor -%}
-</div>
-<div id="img_slide" class="carousel slide" data-ride="carousel">
-<div class="carousel-inner">
-    {% for img in list -%}
-    <div id="img_slide_{{- img.id -}}" class="carousel-item{% if img.id == targetid %} active{% endif %}">
-        <div class="row bg-secondary-subtle">
-            <div class="column col-lg-9 text-center">
-                </a><img class="img-thumbnail" src="/images/{{- img.id -}}/{{- img.name -}}.{{- img.ext -}}"></a>
+<div id="img_{{- img.id -}}" class="col" tabindex="1"><!-- carousel-item [active] -->
+    <div class="row bg-secondary-subtle">
+        <div class="column col-lg-9 text-center">
+            <!-- width = data-twidth, height = data-theight, data-tsrc = src = data-rsrc -->
+            <a onclick='flipScreenMode("{{- img.id -}}");'><img class="img-thumbnail" src="/images/{{- img.id -}}/{{- img.thumbname -}}" width="{{- img.thumbwidth -}}px" height="{{- img.thumbheight -}}px"
+                 {% if img.noThumbnail %}data-rsrc="/images/{{- img.id -}}/{{- img.name -}}.{{- img.ext -}}"{% endif %}></a>
+        </div>
+        <div class="column side col-lg-3 img_info">
+            <div class="img_folders list-group">
+                {% for fld in img.folders -%}
+                <div class="list-group-item list-group-item-info">{{ fld }}</div>
+                {% endfor -%}
             </div>
-            <div class="column side col-lg-3 img_info">
-                <div class="list-group img_folders">
-                    {% for fld in img.folders -%}
-                    <div class="list-group-item list-group-item-info">{{ fld }}</div>
-                    {% endfor -%}
-                </div>
-                <div class="list-group">
-                    {% for tag in img.tags -%}
-                    <div class="list-group-item list-group-item-secondary">{{ tag }}</div>
-                    {% endfor -%}
-                </div>
-                <div class="bg-primary text-wrap">
-                    {{ img.annotation }}
-                </div>
+            <div class="img_tags list-group">
+                {% for tag in img.tags -%}
+                <div class="list-group-item list-group-item-secondary">{{ tag }}</div>
+                {% endfor -%}
+            </div>
+            <div class="img_annotation bg-primary text-wrap">
+                {{ img.annotation }}
             </div>
         </div>
     </div>
-    {% endfor -%}
-    </div>
-    <button class="carousel-control-prev" type="button" data-bs-target="#img_slide" data-bs-slide="prev">
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Previous</span>
-    </button>
-    <button class="carousel-control-next" type="button" data-bs-target="#img_slide" data-bs-slide="next">
-        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Next</span>
-    </button>
-    </div>    
+</div>
+{% endfor -%}
+</div>
+<button class="carousel-control-prev" type="button" data-bs-target="#img_slide" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+</button>
+<button class="carousel-control-next" type="button" data-bs-target="#img_slide" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+</button>
+</div>    
 </div>
 {% endblock %}
 {% block script %}
+<script>
 function flipScreenMode(id = null) {
     const slide = document.getElementById('img_slide');
     const grid = document.getElementById('img_grids');
-    if(grid.style.display == 'none') {
-        var e = null;
-        if(id) {
-            e = document.getElementById('img_thumb_' + id);
-        }
-        if( ! e) { 
-            e = slide.querySelector(".carousel-item.active");
-        }
-        slide.style.display = 'none';        
-        grid.style.display = 'block';
-        if(e) {
-            e.focus();
-        }
-    }
-    else {
-        const a = document.activeElement;
-        var e = null;
-        if(id) {
-            e = document.getElementById('img_slide_' + id);
-        }
-        if(! e) {
+    const tocarousel = !slide.classList.contains('carousel');
+    if(! id) {
+        if(tocarousel) {
             let a = document.activeElement;
-            if(a && a.id.startsWith('img_thumb_')) {
-                e = document.getElementById('img_slide_' + a.id.substr('img_thumb_'.length));
+            while(a) {
+                if(a.id.startsWith('img_')) {
+                    id = a.id.substr('img_'.length);
+                    break;
+                }
+                a = a.parent;
             }
         }
-        for(let a of slide.querySelectorAll('.active')) {
-            a.classList.toggle('active', false);
+        else {
+            let a = document.querySelector(".carousel-item.active");
+            if(a && a.id.startsWith('img_')) {
+                id = a.id.substr('img_'.length);
+            }
         }
-        if(! e) {
-            e = slide.querySelector('.carousel-item');
+    }
+    var selected = document.getElementById('img_'+id);
+    if(! selected) {
+        if(grid.children.length > 0) {
+            selected = grid.children[0];
         }
-        if(e) {
-            e.classList.toggle('active', true);
+    }
+    for(const e of grid.children) {
+        const i = e.querySelector('img');
+        if(i) {
+            if(tocarousel) {
+                if(i.hasAttribute('width')) {
+                    i.setAttribute('data-twidth', i.getAttribute('width'));
+                    i.removeAttribute('width');
+                }
+                if(i.hasAttribute('height')) {
+                    i.setAttribute('data-theight', i.getAttribute('height'));
+                    i.removeAttribute('height');
+                }
+                if(i.hasAttribute('data-rsrc')) {
+                    i.setAttribute('data-tsrc', i.getAttribute('src'));
+                    i.setAttribute('src', i.getAttribute('data-rsrc'));
+                    i.removeAttribute('data-rsrc');
+                }
+            }
+            else {
+                if(i.hasAttribute('data-twidth')) {
+                    i.setAttribute('width', i.getAttribute('data-twidth'));
+                    i.removeAttribute('data-twidth');
+                }
+                if(i.hasAttribute('data-theight')) {
+                    i.setAttribute('height', i.getAttribute('data-theight'));
+                    i.removeAttribute('data-theight');
+                }
+                if(i.hasAttribute('data-tsrc')) {
+                    i.setAttribute('data-rsrc', i.getAttribute('src'));
+                    i.setAttribute('src', i.getAttribute('data-tsrc'));
+                    i.removeAttribute('data-tsrc');
+                }
+            }
         }
-        grid.style.display = 'none';
-        slide.style.display = 'block';
+        if(e == selected) {
+            if(tocarousel) {
+                e.classList.toggle('active', true);
+            }
+            else {
+                e.focus();
+            }
+        }
+        else {
+            e.classList.toggle('active', false);
+        }
+        e.classList.toggle('col', !tocarousel);
+        e.classList.toggle('carousel-item', tocarousel);
+    }
+    grid.classList.toggle('row', !tocarousel);
+    grid.classList.toggle('row-cols-auto', !tocarousel);
+    grid.classList.toggle('carousel-inner', tocarousel);
+    slide.classList.toggle('carousel', tocarousel);
+    slide.classList.toggle('slide', tocarousel);
+    if(selected) {
+        selected.scrollIntoView({block: 'start', behavior: 'instant'});
     }
 }
+</script>
 {% endblock %}
