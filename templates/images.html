@@ -1,13 +1,23 @@
 {% extends "base.html" %}
 {% block title %}eagle viewer{% endblock %}
 {% block navbar %}
-<div class="btn-group">
+<div class="nav-item dropdown">
     <button type="button" class="btn btn-primary" aria-expanded="false">
         {% if foldername %}{{ foldername }}{% else %}フォルダー{% endif %}
     </button>
     <ul id="folder_dropdown" class="dropdown-menu">
-        <a class="dropdown-item" href="/eagle?folder=">全画像</a>
-        <a class="dropdown-item" href="/eagle?folder=,">未分類</a>
+        <li><a class="dropdown-item" href="/eagle?folder=">全画像</a></li>
+        <li><a class="dropdown-item" href="/eagle?folder=,">未分類</a></li>
+        <li class="has-dropdown-menu-sub">
+            <a class="dropdown-item" href="/eagle?folder=STAR">星</a>
+            <ul class="dropdown-menu-sub">
+            <a class="dropdown-item" href="/eagle?folder=STAR5">星5</a>
+            <a class="dropdown-item" href="/eagle?folder=STAR4">星4</a>
+            <a class="dropdown-item" href="/eagle?folder=STAR3">星3</a>
+            <a class="dropdown-item" href="/eagle?folder=STAR2">星2</a>
+            <a class="dropdown-item" href="/eagle?folder=STAR1">星1</a>
+            </ul>
+        </li>
         <li><hr class="dropdown-divider"></li>
         {% for f in folders -%}
         {% if f.children %}
@@ -26,10 +36,10 @@
         {% endif %}
         {% endfor %}
     </ul>
-    <button type="button" class="btn btn-primary" aria-expanded="false" onclick="flipScreenMode()">
-        切替
-    </button>
 </div>
+<button type="button" class="nav-item btn btn-primary" aria-expanded="false" onclick="flipScreenMode()">
+    切替
+</button>
 <form id="search" class="d-flex" role="search" method="get">
     <input class="form-control" type="input" placeholder="キーワード" aria-label="keyword" name="keyword">
     <button class="btn btn-outline-success" type="submit">検索</button>
@@ -48,6 +58,9 @@
                  {% if img.noThumbnail %}data-rsrc="/images/{{- img.id -}}/{{- img.name -}}.{{- img.ext -}}"{% endif %}></a>
         </div>
         <div class="column side col-lg-3 img_info">
+            <div class="star bg-primary text-wrap">
+                {{ img.star }}
+            </div>
             <div class="img_folders list-group">
                 {% for fld in img.folders -%}
                 <div class="list-group-item list-group-item-info">{{ fld }}</div>
@@ -60,6 +73,9 @@
             </div>
             <div class="img_annotation bg-primary text-wrap">
                 {{ img.annotation }}
+            </div>
+            <div class="star bg-primary text-wrap">
+                {{ img.star }}
             </div>
         </div>
     </div>

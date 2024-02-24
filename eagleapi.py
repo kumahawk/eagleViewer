@@ -73,6 +73,21 @@ class Eagle:
         if folder:
             if folder == ',':
                 conditions.append(~Images.folders_collection.any())
+                conditions.append(Images.star == 0)
+            elif folder == 'star5':
+                conditions.append(Images.star == 5)
+            elif folder == 'star4':
+                conditions.append(Images.star == 4)
+            elif folder == 'star3':
+                conditions.append(Images.star == 3)
+            elif folder == 'star2':
+                conditions.append(Images.star == 2)
+            elif folder == 'star1':
+                conditions.append(Images.star == 1)
+            elif folder == 'star0':
+                conditions.append(Images.star == 0)
+            elif folder == 'star':
+                conditions.append(Images.star > 0)
             else:
                 for fid in folder.split(','):
                     if fid:
@@ -97,7 +112,7 @@ class Eagle:
                 if img.id == skipuntil:
                     skipuntil = None
                 continue
-            i = { key:getattr(img, key) for key in ('id','name','ext','noThumbnail','annotation') }
+            i = {key:getattr(img, key) for key in ('id','name','ext','noThumbnail','annotation','star')}
             if img.width < img.height:
                 height = min(img.height, MAXMETRIC)
                 width = int(img.width * height / img.height)
