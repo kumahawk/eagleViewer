@@ -45,3 +45,12 @@ form#search button {
 .dropdown-menu-sub {
     visibility: visible;
 }
+#fillnext_button {
+    background: transparent;
+    border: 0px;
+    text-align: center;
+    margin: 0 auto;
+    display: inline-block;
+    vertical-align: middle;
+    height: 100%;
+}

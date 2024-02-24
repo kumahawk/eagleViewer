@@ -67,8 +67,7 @@ class Eagle:
         i['tags'] = [ t.name for t in img.tags_collection]
         return i
     
-
-    def loadimages(self, n=100, offset=0, folder=None, keyword=None, tags=None):
+    def loadimages(self, n=100, offset=0, folder=None, keyword=None, tags=None, skipuntil=None):
         session = self.getSession()
         conditions = []
         if folder:
@@ -94,7 +93,11 @@ class Eagle:
             imgs = session.query(Images).order_by(desc(Images.id)).offset(offset).limit(n)
         result = []
         for img in imgs:
-            i = { key:getattr(img, key) for key in img.__dict__ if hasattr(img, key) }
+            if skipuntil != None:
+                if img.id == skipuntil:
+                    skipuntil = None
+                continue
+            i = { key:getattr(img, key) for key in ('id','name','ext','noThumbnail','annotation') }
             if img.width < img.height:
                 height = min(img.height, MAXMETRIC)
                 width = int(img.width * height / img.height)
