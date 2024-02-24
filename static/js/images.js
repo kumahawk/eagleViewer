@@ -1,3 +1,9 @@
+function onAfterCarouselSlide(event) {
+    if(event.relatedTarget && event.relatedTarget.id == 'img_next') {
+        fillnext();
+    }
+}
+
 function flipScreenMode(id = null) {
     const slide = document.getElementById('img_slide');
     const grid = document.getElementById('img_grids');
@@ -79,6 +85,9 @@ function flipScreenMode(id = null) {
     grid.classList.toggle('carousel-inner', tocarousel);
     slide.classList.toggle('carousel', tocarousel);
     slide.classList.toggle('slide', tocarousel);
+    if(tocarousel) {
+        slide.addEventListener('slid.bs.carousel', onAfterCarouselSlide);
+    }
     if(selected) {
         selected.scrollIntoView({block: 'start', behavior: 'instant'});
     }
@@ -110,23 +119,49 @@ const templ = Handlebars.compile(
 </div>`);
 
 function fillnext() {
-    let e = document.getElementById('img_next');
-    p = e.previousElementSibling;
-    var id = null;
+    const slide = document.getElementById('img_slide');
+    const e = document.getElementById('img_next');
+    const p = e.previousElementSibling;
+    const iscarousel = slide.classList.contains('carousel');
     if(p && p.id.startsWith('img_')) {
-        id = p.id.substr('img_'.length);
+        let id = p.id.substr('img_'.length);
         url = "/eagle/fetch/" + id + location.search;
     }
     else {
         url = "/eagle/fetch" + location.search;
     }
     fetch(url)
-    .then(function(res){
+    .then((res) => {
         return res.json();
     })
-    .then(function(json) {
+    .then((json) => {
         for(i of json.images) {
             e.insertAdjacentHTML('beforebegin', templ(i));
+            const f = e.previousElementSibling;
+            if(iscarousel) {
+                const g = f.querySelector('img');
+                if(g) {
+                    if(g.hasAttribute('width')) {
+                        g.setAttribute('data-twidth', g.getAttribute('width'));
+                        g.removeAttribute('width');
+                    }
+                    if(g.hasAttribute('height')) {
+                        g.setAttribute('data-theight', g.getAttribute('height'));
+                        g.removeAttribute('height');
+                    }
+                    if(g.hasAttribute('data-rsrc')) {
+                        g.setAttribute('data-tsrc', g.getAttribute('src'));
+                        g.setAttribute('src', g.getAttribute('data-rsrc'));
+                        g.removeAttribute('data-rsrc');
+                    }
+                }
+                f.classList.toggle('col', false);
+                f.classList.toggle('carousel-item', true);
+            }
+        }
+        if(iscarousel && e && p && p.nextElementSibling) {
+            e.classList.toggle('active', false);
+            p.nextElementSibling.classList.toggle('active', true);
         }
     })
 }
