@@ -7,13 +7,37 @@ form#search button {
     flex-shrink: 0;
 }
 
-.img_star, .img_folders, .img_tags, .img_annotation {
+.img_star, .img_folder, .img_tag, .img_annotation {
     display: none;
 }
 
 .carousel-item {
-    .img_star, .img_folders, .img_tags, .img_annotation {
+    .img_star::before {
+        content:"★";
+    }
+    .img_star {
+        display: inline-block;
+        text-align: left;
+        padding-left: 1em;
+        width: auto;
+    }
+    .img_star:empty {
+        display: none;
+    }
+    .img_folder {
+        display: inline-block;
+        text-align: left;
+        width: auto;
+    }
+    .img_tag {
+        display: inline-block;
+        text-align: left;
+        width: auto;
+    }
+    .img_annotation {
         display: block;
+        text-align: left;
+        padding: 2px;
     }
 }
 
@@ -55,4 +79,9 @@ form#search button {
     display: inline-block;
     vertical-align: middle;
     height: 100%;
+}
+#starcontextmenu {
+    width: auto;
+    left:50%;
+    top:25%;
 }

@@ -1,3 +1,4 @@
+import requests
 import json
 import os.path
 from sqlalchemy.orm import Session
@@ -69,7 +70,7 @@ class Eagle:
         if folder:
             if folder == ',':
                 conditions.append(~Images.folders_collection.any())
-                conditions.append(Images.star == 0)
+                conditions.append(Images.star == None)
             elif folder == 'star5':
                 conditions.append(Images.star == 5)
             elif folder == 'star4':
@@ -168,6 +169,21 @@ class Eagle:
         else:
             folder = self.getSession().get(Folders, fid)
             return folder.name if folder else '全画像'
+    
+    def update(self, id, req):
+        req["id"] = id
+        response = requests.post(
+            "http://localhost:41595/api/item/update",
+            data=json.dumps(req),
+            headers={"Content-Type": "application/json"}
+        )
+        if response.status_code == requests.codes.ok:
+            session = self.getSession()
+            image = session.get(Images, id)
+            if image:
+                image.star = req['star']
+                session.commit()
+        return json.loads(response.text)
 
 if __name__ == "__main__":
     e = Eagle()

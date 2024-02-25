@@ -1,7 +1,61 @@
+const myModalAlternative = new bootstrap.Modal('#starcontextmenu', {});
+
 function onAfterCarouselSlide(event) {
     if(event.relatedTarget && event.relatedTarget.id == 'img_next') {
         fillnext();
     }
+}
+
+function oncontextmenu(e) {
+    const menu = document.getElementById("starcontextmenu");
+    const star = document.querySelector(".carousel-item.active .img_star");
+    if(star && star.textContent && 5 >= star.textContent && star.textContent >= 0) {
+        for(a of menu.querySelectorAll('li')) {
+            a.classList.toggle('active', a.textContent == '星' + star.textContent);
+        }
+    }
+    menu.style.left = e.pageX;
+    menu.style.top = e.pageY;
+    myModalAlternative.show();
+}
+
+function contextmenuclose() {
+    myModalAlternative.hide();
+}
+
+function addStar(star) {
+    const a = document.querySelector(".carousel-item.active");
+    if(a && a.id.startsWith('img_')) {
+        const id = a.id.substring('img_'.length);
+        const obj = { star: star };
+        const body = JSON.stringify(obj);
+        const headers = {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        };
+        url = '/eagle/update/' + id;
+        fetch(url, {method: "POST", headers: headers, body: body}).then((res) => {
+            return res.json();
+        }).then((json) => {
+            if(star >= 0) {
+                starElement = a.querySelector(".img_star");
+                if(star) {
+                    starElement.textContent = star;
+                }
+            }
+            else {
+                folders = a.querySelector(".img_folders");
+                if(folders) {
+                    folders.insertAdjacentHTML('beforeend', '<div class="list-group-item list-group-item-secondary">削除</div>');
+                    folders.nodeValue = "";
+                }
+            }
+        })
+        .catch((error) => {
+            alert.error('通信に失敗しました', error);
+        });
+    }
+    myModalAlternative.hide();
 }
 
 function flipScreenMode(id = null) {
@@ -13,7 +67,7 @@ function flipScreenMode(id = null) {
             let a = document.activeElement;
             while(a) {
                 if(a.id.startsWith('img_')) {
-                    id = a.id.substr('img_'.length);
+                    id = a.id.substring('img_'.length);
                     break;
                 }
                 a = a.parent;
@@ -22,7 +76,7 @@ function flipScreenMode(id = null) {
         else {
             let a = document.querySelector(".carousel-item.active");
             if(a && a.id.startsWith('img_')) {
-                id = a.id.substr('img_'.length);
+                id = a.id.substring('img_'.length);
             }
         }
     }
@@ -87,6 +141,11 @@ function flipScreenMode(id = null) {
     slide.classList.toggle('slide', tocarousel);
     if(tocarousel) {
         slide.addEventListener('slid.bs.carousel', onAfterCarouselSlide);
+        document.body.addEventListener('contextmenu', oncontextmenu);
+    }
+    else {
+        slide.removeEventListener('slid.bs.carousel', onAfterCarouselSlide);
+        document.body.removeEventListener('contextmenu', oncontextmenu);
     }
     if(selected) {
         selected.scrollIntoView({block: 'start', behavior: 'instant'});
@@ -124,7 +183,7 @@ function fillnext() {
     const p = e.previousElementSibling;
     const iscarousel = slide.classList.contains('carousel');
     if(p && p.id.startsWith('img_')) {
-        let id = p.id.substr('img_'.length);
+        let id = p.id.substring('img_'.length);
         url = "/eagle/fetch/" + id + location.search;
     }
     else {

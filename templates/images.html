@@ -53,30 +53,20 @@
 {% endblock %}
 {% block body %}
 <div id="eagle_main" class="container">
-<div id="img_slide">
+<div id="img_slide" class="text-center" data-bs-wrap="false">
 <div id="img_grids" class="row row-cols-auto">
 {% for img in list -%}
 <div id="img_{{- img.id -}}" class="col" tabindex="1">
-    <div class="row bg-secondary-subtle">
-        <a onclick='flipScreenMode("{{- img.id -}}");'><img class="img-thumbnail" src="/images/{{- img.id -}}/{{- img.thumbname -}}" width="{{- img.thumbwidth -}}px" height="{{- img.thumbheight -}}px"
-                {% if img.noThumbnail %}data-rsrc="/images/{{- img.id -}}/{{- img.name -}}.{{- img.ext -}}"{% endif %}></a>
-        <div class="img_star bg-primary text-wrap">
-            {{ img.star }}
-        </div>
-        <div class="img_folders list-group">
-            {% for fld in img.folders -%}
-            <div class="list-group-item list-group-item-info">{{ fld }}</div>
-            {% endfor -%}
-        </div>
-        <div class="img_tags list-group">
-            {% for tag in img.tags -%}
-            <div class="list-group-item list-group-item-secondary">{{ tag }}</div>
-            {% endfor -%}
-        </div>
-        <div class="img_annotation bg-primary text-wrap">
-            {{ img.annotation }}
-        </div>
-    </div>
+    <a onclick='flipScreenMode("{{- img.id -}}");'><img class="img-thumbnail" src="/images/{{- img.id -}}/{{- img.thumbname -}}" width="{{- img.thumbwidth -}}px" height="{{- img.thumbheight -}}px"
+        {% if img.noThumbnail %}data-rsrc="/images/{{- img.id -}}/{{- img.name -}}.{{- img.ext -}}"{% endif %}></a>
+    <div class="img_star badge bg-dark">{{- img.star if img.star -}}</div>
+    {% for fld in img.folders -%}
+    <div class="img_folder badge bg-info">{{- fld -}}</div>
+    {% endfor -%}
+    {% for tag in img.tags -%}
+    <div class="img_tag badge bg-secondary">{{- tag -}}</div>
+    {% endfor -%}
+    <div class="img_annotation bg-primary text-wrap">{{- img.annotation -}}</div>
 </div>
 {% endfor -%}
 <div id="img_next" class="col" tabindex="1">
@@ -95,6 +85,22 @@
 </div>
 {% endblock %}
 {% block script %}
+<div id="starcontextmenu" class="modal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <ul class="list-group">
+                <li class="list-group-item" onclick="addStar(5)">星5</li>
+                <li class="list-group-item" onClick="addStar(4)">星4</li>
+                <li class="list-group-item" onClick="addStar(3)">星3</li>
+                <li class="list-group-item" onClick="addStar(2)">星2</li>
+                <li class="list-group-item" onClick="addStar(1)">星1</li>
+                <li class="list-group-item" onClick="addStar(0)">星0</li>
+                <li class="list-group-item" onClick="addStar(-1)">削除</li>
+                <li class="list-group-item" onClick="contextmenuclose()">閉じる</li>
+            </ul>
+        </div>
+    </div>
+</div>
 <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
 <script src="static/js/images.js"></script>
 {% endblock %}

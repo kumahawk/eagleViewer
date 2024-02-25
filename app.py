@@ -33,6 +33,14 @@ def eagle_fetch(id = None):
     session['EagleLibraryPath'] = eagle.dump()
     return jsonify({"images":imgs})
 
+@app.route('/eagle/update/<id>', methods=['POST'])
+def eagle_update(id):
+    eagle = Eagle(session.get('EagleLibraryPath'))
+    json = request.get_json()
+    imgs = eagle.update(id, json)
+    session['EagleLibraryPath'] = eagle.dump()
+    return jsonify(imgs)
+
 @app.route('/', methods=['GET'])
 def index():
     return redirect('/eagle')
