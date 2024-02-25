@@ -26,6 +26,9 @@ form#search button {
         padding-left: 1em;
         width: auto;
     }
+    .img_star:empty {
+        display: none;
+    }
     .img_folder, .img_tag, .img_annotation {
         display: none;
     }    
