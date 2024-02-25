@@ -1,46 +1,50 @@
 {% extends "base.html" %}
 {% block title %}eagle viewer{% endblock %}
 {% block navbar %}
-<div class="nav-item">
-    <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-        {% if foldername %}{{ foldername }}{% else %}フォルダー{% endif %}
-    </button>
-    <ul id="folder_dropdown" class="dropdown-menu">
-        <li><a class="dropdown-item" href="/eagle?folder=">全画像</a></li>
-        <li><a class="dropdown-item" href="/eagle?folder=,">未分類</a></li>
-        <li class="has-dropdown-menu-sub">
-            <a class="dropdown-item" href="/eagle?folder=star">星</a>
-            <ul class="dropdown-menu-sub">
-            <a class="dropdown-item" href="/eagle?folder=star5">星5</a>
-            <a class="dropdown-item" href="/eagle?folder=star4">星4</a>
-            <a class="dropdown-item" href="/eagle?folder=star3">星3</a>
-            <a class="dropdown-item" href="/eagle?folder=star2">星2</a>
-            <a class="dropdown-item" href="/eagle?folder=star1">星1</a>
-            <a class="dropdown-item" href="/eagle?folder=star0">星0</a>
-            </ul>
-        </li>
-        <li><hr class="dropdown-divider"></li>
-        {% for f in folders -%}
-        {% if f.children %}
-        <li class="has-dropdown-menu-sub">
-            <a class="dropdown-item" href="/eagle?folder={{- f.id -}}">{{- f.name -}}</a>
-            <ul class="dropdown-menu-sub">
-            {% for ff in f.children %}
-                <a class="dropdown-item" href="/eagle?folder={{- ff.id -}}">{{- ff.name -}}</a>
+<ul class="navbar-nav">
+    <li class="nav-item">
+        <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+            {% if foldername %}{{ foldername }}{% else %}フォルダー{% endif %}
+        </button>
+        <ul id="folder_dropdown" class="dropdown-menu">
+            <li><a class="dropdown-item" href="/eagle?folder=">全画像</a></li>
+            <li><a class="dropdown-item" href="/eagle?folder=,">未分類</a></li>
+            <li class="has-dropdown-menu-sub">
+                <a class="dropdown-item" href="/eagle?folder=star">星</a>
+                <ul class="dropdown-menu-sub">
+                <a class="dropdown-item" href="/eagle?folder=star5">星5</a>
+                <a class="dropdown-item" href="/eagle?folder=star4">星4</a>
+                <a class="dropdown-item" href="/eagle?folder=star3">星3</a>
+                <a class="dropdown-item" href="/eagle?folder=star2">星2</a>
+                <a class="dropdown-item" href="/eagle?folder=star1">星1</a>
+                <a class="dropdown-item" href="/eagle?folder=star0">星0</a>
+                </ul>
+            </li>
+            <li><hr class="dropdown-divider"></li>
+            {% for f in folders -%}
+            {% if f.children %}
+            <li class="has-dropdown-menu-sub">
+                <a class="dropdown-item" href="/eagle?folder={{- f.id -}}">{{- f.name -}}</a>
+                <ul class="dropdown-menu-sub">
+                {% for ff in f.children %}
+                    <a class="dropdown-item" href="/eagle?folder={{- ff.id -}}">{{- ff.name -}}</a>
+                {% endfor %}
+                </ul>
+            </li>
+            {% else %}
+            <li>
+                <a class="dropdown-item" href="/eagle?folder={{- f.id -}}">{{- f.name -}}</a>
+            </li>
+            {% endif %}
             {% endfor %}
-            </ul>
-        </li>
-        {% else %}
-        <li>
-            <a class="dropdown-item" href="/eagle?folder={{- f.id -}}">{{- f.name -}}</a>
-        </li>
-        {% endif %}
-        {% endfor %}
-    </ul>
-</div>
-<button type="button" class="nav-item btn btn-primary" aria-expanded="false" onclick="flipScreenMode()">
-    切替
-</button>
+        </ul>
+    </li>
+    <li class="nav-item">
+        <button type="button" class="nav-item btn btn-primary" aria-expanded="false" onclick="flipScreenMode()">
+            切替
+        </button>
+    </li>
+</ul>
 <form id="search" class="d-flex" role="search" method="get">
     <input class="form-control" type="input" placeholder="キーワード" aria-label="keyword" name="keyword">
     <button class="btn btn-outline-success" type="submit">検索</button>
