@@ -1,4 +1,3 @@
-import requests
 import json
 import os.path
 from sqlalchemy.orm import Session

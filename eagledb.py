@@ -1,7 +1,7 @@
 
 import os
 from sqlalchemy.ext.automap import automap_base
-from sqlalchemy import create_engine, Column, String,MetaData
+from sqlalchemy import create_engine
 
 # SqlAlchemy を使うための共通変数を定義している
 Base = automap_base()
