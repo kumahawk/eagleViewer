@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="/static/css/style.css">
 <title>{% block title %}{% endblock %}</title>
 </head>
-<body>
+<body{% block bodyattr %}{% endblock %}>
 <header>
 <nav class="navbar navbar-expand bg-body-tertiary">
 <div class="container-fluid">

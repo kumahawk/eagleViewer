@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block title %}eagle viewer{% endblock %}
+{% block bodyattr %} oncontextmenu='return false;'{% endblock %}
 {% block navbar %}
 <ul class="navbar-nav">
     <li class="nav-item">
@@ -52,36 +53,28 @@
 {% endblock %}
 {% block body %}
 <div id="eagle_main" class="container">
-<div id="img_slide"><!-- carousel slide -->
-<div id="img_grids" class="row row-cols-auto"><!-- carousel-inner -->
+<div id="img_slide">
+<div id="img_grids" class="row row-cols-auto">
 {% for img in list -%}
-<div id="img_{{- img.id -}}" class="col" tabindex="1"><!-- carousel-item [active] -->
+<div id="img_{{- img.id -}}" class="col" tabindex="1">
     <div class="row bg-secondary-subtle">
-        <div class="column col-lg-9 text-center">
-            <!-- width = data-twidth, height = data-theight, data-tsrc = src = data-rsrc -->
-            <a onclick='flipScreenMode("{{- img.id -}}");'><img class="img-thumbnail" src="/images/{{- img.id -}}/{{- img.thumbname -}}" width="{{- img.thumbwidth -}}px" height="{{- img.thumbheight -}}px"
-                 {% if img.noThumbnail %}data-rsrc="/images/{{- img.id -}}/{{- img.name -}}.{{- img.ext -}}"{% endif %}></a>
+        <a onclick='flipScreenMode("{{- img.id -}}");'><img class="img-thumbnail" src="/images/{{- img.id -}}/{{- img.thumbname -}}" width="{{- img.thumbwidth -}}px" height="{{- img.thumbheight -}}px"
+                {% if img.noThumbnail %}data-rsrc="/images/{{- img.id -}}/{{- img.name -}}.{{- img.ext -}}"{% endif %}></a>
+        <div class="img_star bg-primary text-wrap">
+            {{ img.star }}
         </div>
-        <div class="column side col-lg-3 img_info">
-            <div class="star bg-primary text-wrap">
-                {{ img.star }}
-            </div>
-            <div class="img_folders list-group">
-                {% for fld in img.folders -%}
-                <div class="list-group-item list-group-item-info">{{ fld }}</div>
-                {% endfor -%}
-            </div>
-            <div class="img_tags list-group">
-                {% for tag in img.tags -%}
-                <div class="list-group-item list-group-item-secondary">{{ tag }}</div>
-                {% endfor -%}
-            </div>
-            <div class="img_annotation bg-primary text-wrap">
-                {{ img.annotation }}
-            </div>
-            <div class="star bg-primary text-wrap">
-                {{ img.star }}
-            </div>
+        <div class="img_folders list-group">
+            {% for fld in img.folders -%}
+            <div class="list-group-item list-group-item-info">{{ fld }}</div>
+            {% endfor -%}
+        </div>
+        <div class="img_tags list-group">
+            {% for tag in img.tags -%}
+            <div class="list-group-item list-group-item-secondary">{{ tag }}</div>
+            {% endfor -%}
+        </div>
+        <div class="img_annotation bg-primary text-wrap">
+            {{ img.annotation }}
         </div>
     </div>
 </div>

@@ -7,12 +7,14 @@ form#search button {
     flex-shrink: 0;
 }
 
-.img_info {
+.img_star, .img_folders, .img_tags, .img_annotation {
     display: none;
 }
 
-.carousel-item .img_info {
-    display: block;
+.carousel-item {
+    .img_star, .img_folders, .img_tags, .img_annotation {
+        display: block;
+    }
 }
 
 :not(.carousel) > .carousel-control-prev,
