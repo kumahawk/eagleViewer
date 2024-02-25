@@ -19,7 +19,7 @@ def images(id, file):
 @app.route('/eagle', methods=['GET'])
 def eagle():
     eagle = Eagle(session.get('EagleLibraryPath'))
-    imgs = eagle.loadimages(folder=request.args.get('folder'), keyword=request.args.get('keyword'), tags=request.args.get('tags'))
+    imgs = eagle.loadimages(60,folder=request.args.get('folder'), keyword=request.args.get('keyword'), tags=request.args.get('tags'))
     folders = eagle.loadfolders()
     foldername = eagle.getfoldername(request.args.get('folder'))
     session['EagleLibraryPath'] = eagle.dump()
@@ -29,19 +29,9 @@ def eagle():
 @app.route('/eagle/fetch/<id>', methods=['GET'])
 def eagle_fetch(id = None):
     eagle = Eagle(session.get('EagleLibraryPath'))
-    imgs = eagle.loadimages(100,skipuntil=id,folder=request.args.get('folder'), keyword=request.args.get('keyword'), tags=request.args.get('tags'))
+    imgs = eagle.loadimages(60,skipuntil=id,folder=request.args.get('folder'), keyword=request.args.get('keyword'), tags=request.args.get('tags'))
     session['EagleLibraryPath'] = eagle.dump()
-    json = {"images":imgs}
-    return jsonify(json)
-
-@app.route('/eagle2', methods=['GET'])
-def eagle2():
-    eagle = Eagle(session.get('EagleLibraryPath'))
-    imgs = eagle.loadimages(folder=request.args.get('folder'), keyword=request.args.get('keyword'), tags=request.args.get('tags'))
-    folders = eagle.loadfolders()
-    foldername = eagle.getfoldername(request.args.get('folder'))
-    session['EagleLibraryPath'] = eagle.dump()
-    return render_template('images2.html', list=imgs, folders=folders, foldername=foldername, targetid=imgs[0]['id'])
+    return jsonify({"images":imgs})
 
 @app.route('/', methods=['GET'])
 def index():
