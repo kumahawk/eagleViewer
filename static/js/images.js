@@ -229,3 +229,12 @@ function fillnext() {
         }
     })
 }
+function resumeserver() {
+    url = "http://qnap2.arimoto.biz:48880/qwol/WOL_script.php?time_string=+3 seconds&mac_address=00:d8:61:d8:16:50&secureon=&addr=192.168.3.0&cidr=24&port=9&store=No&submit=Send request";
+    fetch(url,{mode: 'no-cors'});
+}
+function updatedb() {
+    waiting = document.getElementById("updating");
+    waiting.classList.add('active');
+    location.href="/eagle/updatedb";
+}

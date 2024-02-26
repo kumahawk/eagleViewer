@@ -4,6 +4,7 @@ import os.path
 from sqlalchemy.orm import Session
 from sqlalchemy import desc
 from eagledb import engine, Images, Folders, Tags, Libraries
+import dbbuilder
 
 MAXMETRIC = 256
 
@@ -184,7 +185,10 @@ class Eagle:
                 image.star = req['star']
                 session.commit()
         return json.loads(response.text)
-
+'''
+    def updateDb(self):
+        dbbuilder.builddb(self.librarypath())
+'''
 if __name__ == "__main__":
     e = Eagle()
     imgs = e.loadimages()

@@ -108,3 +108,31 @@ form#search button {
     left:50%;
     top:25%;
 }
+#updating {
+    visibility: hidden;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0,0,0,.7);
+    z-index: 999;
+   transition: .3s;
+   opacity:0;
+}
+#updating.active {
+    visibility: visible;
+    transition: .3s;
+    opacity: 1;
+}
+#updating .message {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);   
+	padding: 15px 30px;
+	background: blueviolet;
+	color: #fff;
+	text-align: center;
+	width: 300px;
+}
