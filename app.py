@@ -44,11 +44,11 @@ def eagle_update(id):
 
 @app.route('/eagle/updatedb', methods=['GET'])
 def eagle_updatedb():
-    now = datetime.datetime.now
+    now = datetime.datetime.now()
     eagle = Eagle(session.get('EagleLibraryPath'))
     eagle.updateDb();
     session['EagleLibraryPath'] = eagle.dump()
-    lapse = datetime.datetime.now - now
+    lapse = datetime.datetime(2000,1,1,0,0,0,0) + (datetime.datetime.now() - now)
     return render_template('updatedb.html', lapse=lapse)
 
 @app.route('/', methods=['GET'])
