@@ -9,13 +9,17 @@ function onAfterCarouselSlide(event) {
 function oncontextmenu(e) {
     const menu = document.getElementById("starcontextmenu");
     const star = document.querySelector(".carousel-item.active .img_star");
-    if(star && star.textContent && 5 >= star.textContent && star.textContent >= 0) {
+    if(star) {
+        if(star.textContent && 5 >= star.textContent && star.textContent >= 0) {
+            startext = '星' + star.textContent;
+        }
+        else {
+            startext = '';
+        }
         for(a of menu.querySelectorAll('li')) {
-            a.classList.toggle('active', a.textContent == '星' + star.textContent);
+            a.classList.toggle('active', startext && a.textContent == startext);
         }
     }
-    menu.style.left = e.pageX;
-    menu.style.top = e.pageY;
     myModalAlternative.show();
 }
 
@@ -141,40 +145,41 @@ function flipScreenMode(id = null) {
     slide.classList.toggle('slide', tocarousel);
     if(tocarousel) {
         slide.addEventListener('slid.bs.carousel', onAfterCarouselSlide);
-        document.body.addEventListener('contextmenu', oncontextmenu);
     }
     else {
         slide.removeEventListener('slid.bs.carousel', onAfterCarouselSlide);
-        document.body.removeEventListener('contextmenu', oncontextmenu);
     }
     if(selected) {
         selected.scrollIntoView({block: 'start', behavior: 'instant'});
     }
 }
 
+function onimageclick(e, id) {
+    const slide = document.getElementById('img_slide');
+    const iscarousel = slide.classList.contains('carousel');
+    if(iscarousel) {
+        oncontextmenu(e);
+    }
+    else {
+        flipScreenMode(id);        
+    }
+}
+
 const templ = Handlebars.compile(
 `<div id="img_{{id}}" class="col" tabindex="1">
+    <a onclick='onimageclick(event, "{{id}}");'>
+    <img class="img-thumbnail" src="/images/{{id}}/{{thumbname}}" width="{{thumbwidth}}px" height="{{thumbheight}}px"
+    {{#if noThumbnail }}data-rsrc="/images/{{id}}/{{name}}.{{ext}}"{{/if}}>
+    </a>
+    <div class="img_star badge bg-dark">{{#if star}}{{star}}{{/if}}</div>
+    {{#each folders}}
+        <div class="img_folder badge bg-info">{{this}}</div>
+    {{/each}}
+    {{#each tags}}
+        <div class="img_tag badge bg-secondary">{{this}}</div>
+    {{/each}}
+    <div class="img_annotation bg-primary text-wrap">{{annotation}}</div>
     <div class="row bg-secondary-subtle">
-        <div class="column col-lg-9 text-center">
-            <a onclick='flipScreenMode("{{id}}");'><img class="img-thumbnail" src="/images/{{id}}/{{thumbname}}" width="{{thumbwidth}}px" height="{{thumbheight}}px"
-                 {{#if noThumbnail}}data-rsrc="/images/{{id}}/{{name}}.{{ext}}"{{/if}}></a>
-        </div>
-        <div class="column side col-lg-3 img_info">
-            <div class="img_folders list-group">
-                {{#each folders}}
-                <div class="list-group-item list-group-item-info">{{this}}</div>
-                {{/each}}
-            </div>
-            <div class="img_tags list-group">
-                {{#each tags}}
-                <div class="list-group-item list-group-item-secondary">{{this}}</div>
-                {{/each}}
-            </div>
-            <div class="img_annotation bg-primary text-wrap">
-                {{annotation}}
-            </div>
-        </div>
-    </div>
 </div>`);
 
 function fillnext() {
