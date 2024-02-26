@@ -71,4 +71,5 @@ def builddb(path):
         library.lastupdate = now
         session.commit()
 
-builddb("C:\\exchange\eagle\\SD.library")
+if __name__ == "__main__":
+    builddb("C:\\exchange\eagle\\SD.library")

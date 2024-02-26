@@ -2,6 +2,7 @@ from flask import Flask,render_template,send_from_directory,redirect, session, r
 from eagleapi import Eagle
 from os import path
 from datetime import timedelta
+import datetime
 
 app = Flask(__name__)
 app.secret_key = 'EagleIsWashiInJapanese'
@@ -41,14 +42,14 @@ def eagle_update(id):
     session['EagleLibraryPath'] = eagle.dump()
     return jsonify(imgs)
 
-'''
 @app.route('/eagle/updatedb', methods=['GET'])
-def eagle_updatedb(id):
+def eagle_updatedb():
+    now = datetime.datetime.now
     eagle = Eagle(session.get('EagleLibraryPath'))
     eagle.updateDb();
     session['EagleLibraryPath'] = eagle.dump()
-    return render_template('updatedb.html')
-'''
+    lapse = datetime.datetime.now - now
+    return render_template('updatedb.html', lapse=lapse)
 
 @app.route('/', methods=['GET'])
 def index():

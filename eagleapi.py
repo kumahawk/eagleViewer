@@ -185,10 +185,10 @@ class Eagle:
                 image.star = req['star']
                 session.commit()
         return json.loads(response.text)
-'''
+
     def updateDb(self):
         dbbuilder.builddb(self.librarypath())
-'''
+
 if __name__ == "__main__":
     e = Eagle()
     imgs = e.loadimages()

@@ -108,6 +108,12 @@ form#search button {
     left:50%;
     top:25%;
 }
+#updatedb {
+    width: 100%;
+    text-align: center;
+    vertical-align: middle;
+}
+
 #updating {
     visibility: hidden;
     position: fixed;
