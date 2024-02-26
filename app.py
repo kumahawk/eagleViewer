@@ -41,6 +41,15 @@ def eagle_update(id):
     session['EagleLibraryPath'] = eagle.dump()
     return jsonify(imgs)
 
+'''
+@app.route('/eagle/updatedb', methods=['GET'])
+def eagle_updatedb(id):
+    eagle = Eagle(session.get('EagleLibraryPath'))
+    eagle.updateDb();
+    session['EagleLibraryPath'] = eagle.dump()
+    return render_template('updatedb.html')
+'''
+
 @app.route('/', methods=['GET'])
 def index():
     return redirect('/eagle')
