@@ -21,7 +21,7 @@ form#search button {
         position: absolute;
         display: inline-block;
         left: 1em;
-        top: 12m;
+        top: 0em;
         text-align: left;
         padding-left: 1em;
         width: auto;
@@ -29,12 +29,38 @@ form#search button {
     .img_star:empty {
         display: none;
     }
-    .img_folder, .img_tag, .img_annotation {
+    .img_folders {
+        position: absolute;
+        display: inline-block;
+        left: 0em;
+        bottom: 0em;
+        text-align: left;
+        width: auto;
+    }
+    .img_folder {
+        display: inline-block;
+        text-align: left;
+        width: auto;
+        vertical-align: top;
+    }
+    .img_infos {
+        display: contents;
+    }
+    .img_tags, .img_annotation {
         display: none;
     }    
 }
 
 .carousel-item {
+    text-align: left;
+    a {
+        text-align: center;
+    }
+    .img_infos {
+        display: inline-block;
+        max-width: 512px;
+        vertical-align: top;
+    }
     .img_star::before {
         content:"★";
     }
@@ -43,24 +69,19 @@ form#search button {
         text-align: left;
         padding-left: 1em;
         width: auto;
+        vertical-align: top;
     }
     .img_star:empty {
         display: none;
     }
-    .img_folder {
+    .img_folders, .img_tags {
+        display: contents;
+    }
+    .img_folder, .img_tag, .img_annotation {
         display: inline-block;
         text-align: left;
         width: auto;
-    }
-    .img_tag {
-        display: inline-block;
-        text-align: left;
-        width: auto;
-    }
-    .img_annotation {
-        display: block;
-        text-align: left;
-        padding: 2px;
+        vertical-align: top;
     }
 }
 

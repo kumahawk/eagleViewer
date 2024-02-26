@@ -171,14 +171,16 @@ const templ = Handlebars.compile(
     <img class="img-thumbnail" src="/images/{{id}}/{{thumbname}}" width="{{thumbwidth}}px" height="{{thumbheight}}px"
     {{#if noThumbnail }}data-rsrc="/images/{{id}}/{{name}}.{{ext}}"{{/if}}>
     </a>
+    <div class="img_infos">
     <div class="img_star badge bg-dark">{{#if star}}{{star}}{{/if}}</div>
-    {{#each folders}}
-        <div class="img_folder badge bg-info">{{this}}</div>
-    {{/each}}
-    {{#each tags}}
-        <div class="img_tag badge bg-secondary">{{this}}</div>
-    {{/each}}
+    <div class="img_folders">
+    {{#each folders}}<div class="img_folder badge bg-info">{{this}}</div>{{/each}}
+    </div>
+    <div class="img_tags">
+    {{#each tags}}<div class="img_tag badge bg-secondary">{{this}}</div>{{/each}}
+    </div>
     <div class="img_annotation bg-primary text-wrap">{{annotation}}</div>
+    </div>
     <div class="row bg-secondary-subtle">
 </div>`);
 

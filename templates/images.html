@@ -62,14 +62,16 @@
 <div id="img_{{- img.id -}}" class="col" tabindex="1">
     <a onclick='onimageclick(event, "{{- img.id -}}");'><img class="img-thumbnail" src="/images/{{- img.id -}}/{{- img.thumbname -}}" width="{{- img.thumbwidth -}}px" height="{{- img.thumbheight -}}px"
         {% if img.noThumbnail %}data-rsrc="/images/{{- img.id -}}/{{- img.name -}}.{{- img.ext -}}"{% endif %}></a>
-    <div class="img_star badge bg-dark">{{- img.star if img.star -}}</div>
-    {% for fld in img.folders -%}
-    <div class="img_folder badge bg-info">{{- fld -}}</div>
-    {% endfor -%}
-    {% for tag in img.tags -%}
-    <div class="img_tag badge bg-secondary">{{- tag -}}</div>
-    {% endfor -%}
-    <div class="img_annotation bg-primary text-wrap">{{- img.annotation -}}</div>
+    <div class="img_infos">
+        <div class="img_star badge bg-dark">{{- img.star if img.star -}}</div>
+        <div class="img_folders">
+            {% for fld in img.folders -%}<div class="img_folder badge bg-info">{{- fld -}}</div>{% endfor -%}
+        </div>
+        <div class="img_tags">
+            {% for tag in img.tags -%}<div class="img_tag badge bg-secondary">{{- tag -}}</div>{% endfor -%}
+        </div>
+        <div class="img_annotation bg-primary text-wrap">{{- img.annotation -}}</div>
+    </div>
 </div>
 {% endfor -%}
 <div id="img_next" class="col" tabindex="1">
