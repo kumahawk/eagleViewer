@@ -65,8 +65,7 @@ class Eagle:
         i['tags'] = [ t.name for t in img.tags_collection]
         return i
     
-    def loadimages(self, n=100, offset=0, folder=None, keyword=None, tags=None, skipuntil=None):
-        session = self.getSession()
+    def buildconditions(self, folder, keyword, tags, skipuntil):
         conditions = []
         if folder:
             if folder == ',':
@@ -89,19 +88,24 @@ class Eagle:
             else:
                 for fid in folder.split(','):
                     if fid:
-                        f = session.get(Folders, fid)
+                        f = self.getSession().get(Folders, fid)
                         if f:
                             conditions.append(Images.folders_collection.contains(f))
         if tags:
             for t in tags.split(','):
                 if t:
-                    tag = session.query(Tags).filter(Tags.name == t).one_or_none()
+                    tag = self.getSession().query(Tags).filter(Tags.name == t).one_or_none()
                     if tag != None:
                         conditions.append(Images.tags_collection.contains(tag))
         if skipuntil:
             conditions.append(Images.id < skipuntil)
         if keyword:
             conditions.append(Images.annotation.like(f"%{keyword}%"))
+        return conditions
+
+    def loadimages(self, n=100, offset=0, folder=None, keyword=None, tags=None, skipuntil=None):
+        session = self.getSession()
+        conditions = self.buildconditions(folder, keyword, tags, skipuntil)
         if conditions:
             imgs = session.query(Images).filter(*conditions).order_by(desc(Images.id)).offset(offset).limit(n)
         else:

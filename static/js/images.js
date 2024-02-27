@@ -1,11 +1,5 @@
 const myModalAlternative = new bootstrap.Modal('#starcontextmenu', {});
 
-function onAfterCarouselSlide(event) {
-    if(event.relatedTarget && event.relatedTarget.id == 'img_next') {
-        fillnext();
-    }
-}
-
 function oncontextmenu(e) {
     const menu = document.getElementById("starcontextmenu");
     const star = document.querySelector(".carousel-item.active .img_star");
@@ -143,12 +137,6 @@ function flipScreenMode(id = null) {
     grid.classList.toggle('carousel-inner', tocarousel);
     slide.classList.toggle('carousel', tocarousel);
     slide.classList.toggle('slide', tocarousel);
-    if(tocarousel) {
-        slide.addEventListener('slid.bs.carousel', onAfterCarouselSlide);
-    }
-    else {
-        slide.removeEventListener('slid.bs.carousel', onAfterCarouselSlide);
-    }
     if(selected) {
         selected.scrollIntoView({block: 'start', behavior: 'instant'});
     }
@@ -240,3 +228,20 @@ function updatedb() {
     waiting.classList.add('active');
     location.href="/eagle/updatedb";
 }
+
+function onvisible(entries, observer) {
+    fillnext();
+}
+
+function onload(event) {
+    let options = {
+      root: null,
+      rootMargin: "0px",
+      threshold: 1.0,
+    };
+    let observer = new IntersectionObserver(onvisible, options);
+    let nextbutton = document.getElementById("fillnext_button");
+    observer.observe(nextbutton);
+}
+
+window.addEventListener("load", function(event) { this.onload(event); }, false);
