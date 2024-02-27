@@ -18,7 +18,7 @@ def images(id, file):
     return send_from_directory(folderpath, file)
 
 @app.route('/eagle', methods=['GET'])
-def eagle():
+def eagle_search():
     eagle = Eagle(session.get('EagleLibraryPath'))
     imgs = eagle.loadimages(60,folder=request.args.get('folder'), keyword=request.args.get('keyword'), tags=request.args.get('tags'))
     folders = eagle.loadfolders()

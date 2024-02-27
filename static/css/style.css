@@ -172,3 +172,9 @@ form#search button {
 	text-align: center;
 	width: 300px;
 }
+#errormessage {
+    display: block;
+}
+#errormessage:empty {
+    display: none;
+}

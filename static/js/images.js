@@ -4,6 +4,7 @@ const grid = document.getElementById('img_grids');
 const menu = document.getElementById("starcontextmenu");
 const nextpanel = document.getElementById('img_next');
 const waiting = document.getElementById("updating");
+const error = document.getElementById("errormessage");
 
 function oncontextmenu(e) {
     const star = document.querySelector(".carousel-item.active .img_star");
@@ -28,6 +29,7 @@ function contextmenuclose() {
 function addStar(star) {
     const a = document.querySelector(".carousel-item.active");
     if(a && a.id.startsWith('img_')) {
+        error.textContent = "";
         const id = a.id.substring('img_'.length);
         const obj = { star: star };
         const body = JSON.stringify(obj);
@@ -39,22 +41,13 @@ function addStar(star) {
         fetch(url, {method: "POST", headers: headers, body: body}).then((res) => {
             return res.json();
         }).then((json) => {
-            if(star >= 0) {
-                starElement = a.querySelector(".img_star");
-                if(star) {
-                    starElement.textContent = star;
-                }
-            }
-            else {
-                folders = a.querySelector(".img_folders");
-                if(folders) {
-                    folders.insertAdjacentHTML('beforeend', '<div class="list-group-item list-group-item-secondary">削除</div>');
-                    folders.nodeValue = "";
-                }
+            starElement = a.querySelector(".img_star");
+            if(star) {
+                starElement.textContent = star;
             }
         })
-        .catch((error) => {
-            alert.error('通信に失敗しました', error);
+        .catch((err) => {
+            error.textContent = err;
         });
     }
     myModalAlternative.hide();
@@ -183,6 +176,7 @@ function fillnext() {
     else {
         url = "/eagle/fetch" + location.search;
     }
+    error.textContent = "";
     fetch(url)
     .then((res) => {
         return res.json();
@@ -223,8 +217,8 @@ function fillnext() {
             }
         }
     })
-    .catch((error) => {
-        alert(error);
+    .catch((err) => {
+        error.textContent = err;
     });
 }
 function resumeserver() {
