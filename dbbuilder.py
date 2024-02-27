@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 import datetime
 import os
 import json
+import threading
 
 def addFolder(session, library, folders, parent):
     for f in folders:
@@ -49,27 +50,100 @@ def addImages(session, i, library):
     img.folders_collection = [session.get(Folders, fid) for fid in i["folders"]]
     img.isDeleted = i["isDeleted"]
 
-def builddb(path):
-    decoder = json.JSONDecoder()
-    now = datetime.datetime.now()
-    with Session(engine) as session:
-        library = session.query(Libraries).filter(Libraries.path == path).one()
-        with open(os.path.join(path, "metadata.json"), encoding="utf-8") as f:
-            folders = decoder.raw_decode(f.readline())[0]
-        addFolder(session, library, folders["folders"], None)
-        session.flush()
-        imagesdir = os.path.join(path, "images")
-        for imginfo in os.listdir(imagesdir):
-            file = os.path.join(imagesdir, imginfo, "metadata.json")
-            if os.path.isfile(file):
-                sresult = os.stat(file)
-                with open(file, encoding="utf-8") as f:
-                    img = decoder.raw_decode(f.readline())[0]
-                if img['isDeleted'] or library.lastupdate == None or library.lastupdate.timestamp() < sresult.st_mtime:
-                    addImages(session, img, library)
-                    session.flush()
-        library.lastupdate = now
-        session.commit()
+def threadmain(me, path):
+    me.run(path)
+
+mylock = threading.Lock()
+
+class Worker:
+    _thread = None
+    _progress = 0
+    _fullgage = 0
+    _error = ""
+    _abort = False
+
+    def builddb(self, path):
+        decoder = json.JSONDecoder()
+        now = datetime.datetime.now()
+        with Session(engine) as session:
+            library = session.query(Libraries).filter(Libraries.path == path).one()
+            imagesdir = os.path.join(path, "images")
+            files = os.listdir(imagesdir)
+            self._fullgage = len(files)
+            with open(os.path.join(path, "metadata.json"), encoding="utf-8") as f:
+                folders = decoder.raw_decode(f.readline())[0]
+            addFolder(session, library, folders["folders"], None)
+            session.flush()
+            for i in range(len(files)):
+                if self._abort:
+                    self._error = "aborted"
+                    return
+                self._progress = i
+                file = os.path.join(imagesdir, files[i], "metadata.json")
+                if os.path.isfile(file):
+                    sresult = os.stat(file)
+                    with open(file, encoding="utf-8") as f:
+                        img = decoder.raw_decode(f.readline())[0]
+                    if img['isDeleted'] or library.lastupdate == None or library.lastupdate.timestamp() < sresult.st_mtime:
+                        addImages(session, img, library)
+                        session.flush()
+            self._progress = len(files)
+            library.lastupdate = now
+            session.commit()
+
+
+    def run(self, path):
+        try:
+            self.builddb(path)
+            self._error = ""
+        except Exception as e:
+            self._error = e
+        except:
+            self._error = "unknown error"
+        finally:
+            self._thread = None
+
+    def start(self, path):
+        with mylock:
+            if self._thread == None:
+                self._thread = threading.Thread(target = threadmain, args = (self, path))
+                self._progress = 0
+                self._fullgage = 0
+                self._error = ""
+                self._abort = False
+                try:
+                    self._thread.start()
+                except Exception as e:
+                    self._error = e
+                    self._thread = None
+                except:
+                    self._error = "unknown error"
+                    self._thread = None
+
+    def wait(self, timeout):
+        thread = self._thread
+        if thread and thread.is_alive():
+            thread.join(timeout)
+        return { "error": self._error, "fullgage": self._fullgage, "progress": self._progress, "running": (thread != None) and thread.is_alive()}
+
+    def abort(self):
+        self._abort = True
+
+worker = Worker()
+
+def start(path):
+    worker.start(path)
+
+def wait(timeout):
+    return worker.wait(timeout)
+
+def abort():
+    worker.abort()
 
 if __name__ == "__main__":
-    builddb("C:\\exchange\eagle\\SD.library")
+    start("C:\\exchange\eagle\\SD.library")
+    x = wait(3)
+    print(x)
+    while x["running"]:
+        x = wait(10)
+        print(x)
