@@ -32,7 +32,8 @@ def eagle_fetch(id = None):
     eagle = Eagle(session.get('EagleLibraryPath'))
     imgs = eagle.loadimages(60,skipuntil=id,folder=request.args.get('folder'), keyword=request.args.get('keyword'), tags=request.args.get('tags'))
     session['EagleLibraryPath'] = eagle.dump()
-    return jsonify({"images":imgs})
+    json = {"images":imgs, "finish": (len(imgs) < 60) }
+    return jsonify(json)
 
 @app.route('/eagle/update/<id>', methods=['POST'])
 def eagle_update(id):

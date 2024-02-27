@@ -1,7 +1,11 @@
 const myModalAlternative = new bootstrap.Modal('#starcontextmenu', {});
+const slide = document.getElementById('img_slide');
+const grid = document.getElementById('img_grids');
+const menu = document.getElementById("starcontextmenu");
+const nextpanel = document.getElementById('img_next');
+const waiting = document.getElementById("updating");
 
 function oncontextmenu(e) {
-    const menu = document.getElementById("starcontextmenu");
     const star = document.querySelector(".carousel-item.active .img_star");
     if(star) {
         if(star.textContent && 5 >= star.textContent && star.textContent >= 0) {
@@ -57,8 +61,6 @@ function addStar(star) {
 }
 
 function flipScreenMode(id = null) {
-    const slide = document.getElementById('img_slide');
-    const grid = document.getElementById('img_grids');
     const tocarousel = !slide.classList.contains('carousel');
     if(! id) {
         if(tocarousel) {
@@ -143,7 +145,6 @@ function flipScreenMode(id = null) {
 }
 
 function onimageclick(e, id) {
-    const slide = document.getElementById('img_slide');
     const iscarousel = slide.classList.contains('carousel');
     if(iscarousel) {
         oncontextmenu(e);
@@ -173,9 +174,7 @@ const templ = Handlebars.compile(
 </div>`);
 
 function fillnext() {
-    const slide = document.getElementById('img_slide');
-    const e = document.getElementById('img_next');
-    const p = e.previousElementSibling;
+    const p = nextpanel.previousElementSibling;
     const iscarousel = slide.classList.contains('carousel');
     if(p && p.id.startsWith('img_')) {
         let id = p.id.substring('img_'.length);
@@ -190,8 +189,8 @@ function fillnext() {
     })
     .then((json) => {
         for(i of json.images) {
-            e.insertAdjacentHTML('beforebegin', templ(i));
-            const f = e.previousElementSibling;
+            nextpanel.insertAdjacentHTML('beforebegin', templ(i));
+            const f = nextpanel.previousElementSibling;
             if(iscarousel) {
                 const g = f.querySelector('img');
                 if(g) {
@@ -213,35 +212,48 @@ function fillnext() {
                 f.classList.toggle('carousel-item', true);
             }
         }
-        if(iscarousel && e && p && p.nextElementSibling) {
-            e.classList.toggle('active', false);
-            p.nextElementSibling.classList.toggle('active', true);
+        nextpanel.classList.toggle('disabled', json.finish);
+        if(iscarousel && nextpanel && p && p.nextElementSibling) {
+            nextpanel.classList.toggle('active', false);
+            if(p.nextElementSibling != nextpanel) {
+                p.nextElementSibling.classList.toggle('active', true);
+            }
+            else {
+                p.classList.toggle('active', true);
+            }
         }
     })
+    .catch((error) => {
+        alert(error);
+    });
 }
 function resumeserver() {
     url = "http://qnap2.arimoto.biz:48880/qwol/WOL_script.php?time_string=+3 seconds&mac_address=00:d8:61:d8:16:50&secureon=&addr=192.168.3.0&cidr=24&port=9&store=No&submit=Send request";
     fetch(url,{mode: 'no-cors'});
 }
 function updatedb() {
-    waiting = document.getElementById("updating");
     waiting.classList.add('active');
     location.href="/eagle/updatedb";
 }
 
 function onvisible(entries, observer) {
-    fillnext();
+    entries.forEach(entry => {
+        if(entry.isIntersecting && entry.target.id == "img_next") {
+            if(! nextpanel.classList.contains('disabled')) {
+                fillnext();
+            }
+        }
+    });
 }
 
 function onload(event) {
     let options = {
       root: null,
       rootMargin: "0px",
-      threshold: 1.0,
+      threshold: 0.95,
     };
-    let observer = new IntersectionObserver(onvisible, options);
-    let nextbutton = document.getElementById("fillnext_button");
-    observer.observe(nextbutton);
+    const observer = new IntersectionObserver(onvisible, options);
+    observer.observe(nextpanel);
 }
 
 window.addEventListener("load", function(event) { this.onload(event); }, false);
