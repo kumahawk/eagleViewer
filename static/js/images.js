@@ -288,7 +288,7 @@ function onvisible(entries, observer) {
     entries.forEach(entry => {
         if(entry.isIntersecting && entry.target.id == "img_next") {
             if(! nextpanel.classList.contains('disabled')) {
-                fillnext();
+                setTimeout(fillnext, 500);
             }
         }
     });
