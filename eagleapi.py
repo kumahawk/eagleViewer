@@ -190,8 +190,15 @@ class Eagle:
                 session.commit()
         return json.loads(response.text)
 
-    def updateDb(self):
-        dbbuilder.builddb(self.librarypath())
+    def updatedb(self):
+        dbbuilder.start(self.librarypath())
+        return dbbuilder.wait(1)
+
+    def waitupdatedb(self):
+        return dbbuilder.wait(10)
+
+    def abortupdatedb(self):
+        return dbbuilder.abort()
 
 if __name__ == "__main__":
     e = Eagle()

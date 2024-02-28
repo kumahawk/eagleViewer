@@ -1,9 +1,10 @@
 const myModalAlternative = new bootstrap.Modal('#starcontextmenu', {});
+const myUpdating = new bootstrap.Modal('#updating', {});
 const slide = document.getElementById('img_slide');
 const grid = document.getElementById('img_grids');
 const menu = document.getElementById("starcontextmenu");
 const nextpanel = document.getElementById('img_next');
-const waiting = document.getElementById("updating");
+const updating = document.getElementById("updating");
 const error = document.getElementById("errormessage");
 
 function oncontextmenu(e) {
@@ -225,9 +226,62 @@ function resumeserver() {
     url = "http://qnap2.arimoto.biz:48880/qwol/WOL_script.php?time_string=+3 seconds&mac_address=00:d8:61:d8:16:50&secureon=&addr=192.168.3.0&cidr=24&port=9&store=No&submit=Send request";
     fetch(url,{mode: 'no-cors'});
 }
-function updatedb() {
-    waiting.classList.add('active');
-    location.href="/eagle/updatedb";
+
+function updateprogress(json) {
+    progress = updating.querySelector(".progress");
+    button = updating.querySelector("button");
+    progressbar = updating.querySelector(".progress-bar");
+    message = updating.querySelector(".alert");
+    progress.setAttribute("aria-valuenow", json.progress);
+    if(json.fullgage > 0) {
+        fullgage = json.fullgage;
+        progress.setAttribute("aria-valuemax", json.fullgage);
+    }
+    else {
+        fullgage = 100;
+    }
+    progress = (json.progress * 100 / fullgage).toFixed(1) + "%";
+    progressbar.style.width = progress;
+    progressbar.textContent = progress;
+    message.textContent = json.error;
+    if(! json.running) {
+        if(json.error == "") {
+            message.textContent = "更新完了"
+        }
+        button.textContent = "確認";
+    }
+    else {
+        if(json.error == "") {
+            message.textContent = "DB更新中..."
+        }
+        button.textContent = "中止";
+    }
+}
+
+function endupdating() {
+    progress = updating.querySelector(".progress");
+    button = updating.querySelector("button");
+    if(button.textContent == "中止") {
+        fetch("/eagle/updatedb/abort").then((x) => {});
+    }
+    else {
+        myUpdating.hide();
+        progress.setAttribute("aria-valuenow", 0);
+        progress.setAttribute("aria-valuemax", 100);
+        button.textContent = "中止";    
+    }
+}
+
+async function updatedb() {
+    myUpdating.show();
+    res = await fetch("/eagle/updatedb/start", {method: "POST"});
+    json = await res.json();
+    updateprogress(json);
+    while(json.running) {
+        res = await fetch("/eagle/updatedb/wait");
+        json = await res.json();
+        updateprogress(json);    
+    }
 }
 
 function onvisible(entries, observer) {

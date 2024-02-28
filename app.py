@@ -43,14 +43,26 @@ def eagle_update(id):
     session['EagleLibraryPath'] = eagle.dump()
     return jsonify(imgs)
 
-@app.route('/eagle/updatedb', methods=['GET'])
-def eagle_updatedb():
-    now = datetime.datetime.now()
+@app.route('/eagle/updatedb/start', methods=['POST'])
+def eagle_updatedbstart():
     eagle = Eagle(session.get('EagleLibraryPath'))
-    eagle.updateDb();
+    response = eagle.updatedb();
     session['EagleLibraryPath'] = eagle.dump()
-    lapse = datetime.datetime(2000,1,1,0,0,0,0) + (datetime.datetime.now() - now)
-    return render_template('updatedb.html', lapse=lapse)
+    return jsonify(response)
+
+@app.route('/eagle/updatedb/wait', methods=['GET'])
+def eagle_updatedbwait():
+    eagle = Eagle(session.get('EagleLibraryPath'))
+    response = eagle.waitupdatedb();
+    session['EagleLibraryPath'] = eagle.dump()
+    return jsonify(response)
+
+@app.route('/eagle/updatedb/abort', methods=['GET'])
+def eagle_updatedbabort():
+    eagle = Eagle(session.get('EagleLibraryPath'))
+    eagle.abortupdatedb();
+    session['EagleLibraryPath'] = eagle.dump()
+    return jsonify({})
 
 @app.route('/', methods=['GET'])
 def index():

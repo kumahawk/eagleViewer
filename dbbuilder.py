@@ -76,7 +76,7 @@ class Worker:
             session.flush()
             for i in range(len(files)):
                 if self._abort:
-                    self._error = "aborted"
+                    self._error = "中止しました"
                     return
                 self._progress = i
                 file = os.path.join(imagesdir, files[i], "metadata.json")
@@ -95,11 +95,10 @@ class Worker:
     def run(self, path):
         try:
             self.builddb(path)
-            self._error = ""
         except Exception as e:
             self._error = e
         except:
-            self._error = "unknown error"
+            self._error = "不明なエラー"
         finally:
             self._thread = None
 
@@ -117,14 +116,15 @@ class Worker:
                     self._error = e
                     self._thread = None
                 except:
-                    self._error = "unknown error"
+                    self._error = "不明なエラー"
                     self._thread = None
 
     def wait(self, timeout):
         thread = self._thread
         if thread and thread.is_alive():
             thread.join(timeout)
-        return { "error": self._error, "fullgage": self._fullgage, "progress": self._progress, "running": (thread != None) and thread.is_alive()}
+        return { "error": self._error, "fullgage": self._fullgage, "aborted": self._abort,
+                 "progress": self._progress, "running": (thread != None) and thread.is_alive()}
 
     def abort(self):
         self._abort = True
