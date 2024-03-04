@@ -141,7 +141,7 @@ def abort():
     worker.abort()
 
 if __name__ == "__main__":
-    start("C:\\exchange\eagle\\SD.library")
+    start("D:\\exchange\eagle\\SD.library")
     x = wait(3)
     print(x)
     while x["running"]:
