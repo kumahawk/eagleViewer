@@ -2,6 +2,6 @@
 {% block title %}eagle viewer{% endblock %}
 {% block body %}
 <h1 id="updatedb" class="container">
-    <a href="/eagle">更新完了({{ lapse.strftime('%H:%M:%S') }})</a>
+    <a href="/{{- URLBASE -}}/eagle">更新完了({{ lapse.strftime('%H:%M:%S') }})</a>
 </h1>
 {% endblock %}

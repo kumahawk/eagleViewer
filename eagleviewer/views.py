@@ -1,7 +1,6 @@
 from eagleviewer import app
 from flask import render_template,send_from_directory,redirect, session, request, jsonify
 from .eagleapi import Eagle
-from os import path
 from datetime import timedelta
 
 app.secret_key = 'EagleIsWashiInJapanese'
@@ -23,7 +22,7 @@ def eagle_search():
     folders = eagle.loadfolders()
     foldername = eagle.getfoldername(request.args.get('folder'))
     session['EagleLibraryPath'] = eagle.dump()
-    return render_template('images.html', list=imgs, folders=folders, foldername=foldername)
+    return render_template('images.html', list=imgs, folders=folders, foldername=foldername, URLBASE=app.URLBASE)
 
 @app.route('/eagle/fetch', methods=['GET'])
 @app.route('/eagle/fetch/<id>', methods=['GET'])

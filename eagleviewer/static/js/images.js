@@ -38,7 +38,7 @@ function addStar(star) {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
         };
-        url = '/eagle/update/' + id;
+        url = URLBASE + '/eagle/update/' + id;
         fetch(url, {method: "POST", headers: headers, body: body}).then((res) => {
             return res.json();
         }).then((json) => {
@@ -151,8 +151,8 @@ function onimageclick(e, id) {
 const templ = Handlebars.compile(
 `<div id="img_{{id}}" class="col" tabindex="1">
     <a onclick='onimageclick(event, "{{id}}");'>
-    <img class="img-thumbnail" src="/images/{{id}}/{{thumbname}}" width="{{thumbwidth}}px" height="{{thumbheight}}px"
-    {{#if noThumbnail }}data-rsrc="/images/{{id}}/{{name}}.{{ext}}"{{/if}}>
+    <img class="img-thumbnail" src="{{URLBASE}}/images/{{id}}/{{thumbname}}" width="{{thumbwidth}}px" height="{{thumbheight}}px"
+    {{#if noThumbnail }}data-rsrc="{{URLBASE}}/images/{{id}}/{{name}}.{{ext}}"{{/if}}>
     </a>
     <div class="img_infos">
     <div class="img_star badge bg-dark">{{#if star}}{{star}}{{/if}}</div>
@@ -172,10 +172,10 @@ function fillnext() {
     const iscarousel = slide.classList.contains('carousel');
     if(p && p.id.startsWith('img_')) {
         let id = p.id.substring('img_'.length);
-        url = "/eagle/fetch/" + id + location.search;
+        url = URLBASE + "/eagle/fetch/" + id + location.search;
     }
     else {
-        url = "/eagle/fetch" + location.search;
+        url = URLBASE + "/eagle/fetch" + location.search;
     }
     error.textContent = "";
     fetch(url)
@@ -184,6 +184,7 @@ function fillnext() {
     })
     .then((json) => {
         for(i of json.images) {
+            i.URLBASE = URLBASE;
             nextpanel.insertAdjacentHTML('beforebegin', templ(i));
             const f = nextpanel.previousElementSibling;
             if(iscarousel) {
@@ -262,7 +263,7 @@ function endupdating() {
     progress = updating.querySelector(".progress");
     button = updating.querySelector("button");
     if(button.textContent == "中止") {
-        fetch("/eagle/updatedb/abort", {method: "POST"}).then((x) => {});
+        fetch(URLBASE + "/eagle/updatedb/abort", {method: "POST"}).then((x) => {});
     }
     else {
         myUpdating.hide();
@@ -274,11 +275,11 @@ function endupdating() {
 
 async function updatedb() {
     myUpdating.show();
-    res = await fetch("/eagle/updatedb/start", {method: "POST"});
+    res = await fetch(URLBASE + "/eagle/updatedb/start", {method: "POST"});
     json = await res.json();
     updateprogress(json);
     while(json.running) {
-        res = await fetch("/eagle/updatedb/wait");
+        res = await fetch(URLBASE + "/eagle/updatedb/wait");
         json = await res.json();
         updateprogress(json);    
     }
@@ -288,7 +289,7 @@ function onvisible(entries, observer) {
     entries.forEach(entry => {
         if(entry.isIntersecting && entry.target.id == "img_next") {
             if(! nextpanel.classList.contains('disabled')) {
-                setTimeout(fillnext, 100);
+                setTimeout(() => { fillnext("") }, 500);
             }
         }
     });
