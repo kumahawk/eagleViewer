@@ -262,7 +262,7 @@ function endupdating() {
     progress = updating.querySelector(".progress");
     button = updating.querySelector("button");
     if(button.textContent == "中止") {
-        fetch("/eagle/updatedb/abort").then((x) => {});
+        fetch("/eagle/updatedb/abort", {method: "POST"}).then((x) => {});
     }
     else {
         myUpdating.hide();
@@ -288,7 +288,7 @@ function onvisible(entries, observer) {
     entries.forEach(entry => {
         if(entry.isIntersecting && entry.target.id == "img_next") {
             if(! nextpanel.classList.contains('disabled')) {
-                setTimeout(fillnext, 500);
+                setTimeout(fillnext, 100);
             }
         }
     });

@@ -3,8 +3,8 @@ import json
 import os.path
 from sqlalchemy.orm import Session
 from sqlalchemy import desc
-from eagledb import engine, Images, Folders, Tags, Libraries
-import dbbuilder
+from .eagledb import engine, Images, Folders, Tags, Libraries
+from . import dbbuilder
 
 MAXMETRIC = 256
 

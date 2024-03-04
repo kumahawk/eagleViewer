@@ -5,7 +5,7 @@ from sqlalchemy import create_engine
 
 # SqlAlchemy を使うための共通変数を定義している
 Base = automap_base()
-engine = create_engine('sqlite:///' + os.path.join(os.path.dirname(__file__), 'var', 'eagle.db'))
+engine = create_engine('sqlite:///' + os.environ.get('EAGLEVIEWERDB'))
 Base.prepare(engine)
 
 Images = Base.classes.images

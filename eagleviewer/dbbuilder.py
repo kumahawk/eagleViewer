@@ -1,4 +1,4 @@
-from eagledb import engine, Folders, Tags, Libraries, Images
+from .eagledb import engine, Folders, Tags, Libraries, Images
 from sqlalchemy.orm import Session
 import datetime
 import os
@@ -124,7 +124,7 @@ class Worker:
         if thread and thread.is_alive():
             thread.join(timeout)
         return { "error": self._error, "fullgage": self._fullgage, "aborted": self._abort,
-                 "progress": self._progress, "running": (thread != None) and thread.is_alive()}
+                 "progress": self._progress, "running": thread.is_alive() if thread else False }
 
     def abort(self):
         self._abort = True
