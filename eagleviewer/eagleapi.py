@@ -49,7 +49,7 @@ class Eagle:
         session = self.getSession()
         if path:
             self._library = session.query(Libraries).filter(Libraries.path == path).one()
-        else:
+        if not self._library:
             self._library = session.query(Libraries).first()
 
     def librarypath(self, id = None):
