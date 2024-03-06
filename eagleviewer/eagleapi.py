@@ -47,7 +47,10 @@ class Eagle:
     
     def loadLibrary(self, path):
         session = self.getSession()
-        self._library = session.query(Libraries).filter(Libraries.path == path).one()
+        if path:
+            self._library = session.query(Libraries).filter(Libraries.path == path).one()
+        else:
+            self._library = session.query(Libraries).first()
 
     def librarypath(self, id = None):
         if not self._library:
