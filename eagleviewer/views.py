@@ -64,4 +64,4 @@ def eagle_updatedbabort():
 
 @app.route('/', methods=['GET'])
 def index():
-    return redirect('/eagle')
+    return redirect(app.URLBASE + '/eagle')
