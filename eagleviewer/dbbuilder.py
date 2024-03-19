@@ -139,11 +139,3 @@ def wait(timeout):
 
 def abort():
     worker.abort()
-
-if __name__ == "__main__":
-    start("D:\\exchange\eagle\\SD.library")
-    x = wait(3)
-    print(x)
-    while x["running"]:
-        x = wait(10)
-        print(x)
