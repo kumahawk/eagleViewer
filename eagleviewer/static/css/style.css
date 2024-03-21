@@ -133,10 +133,8 @@ form#search button {
     vertical-align: middle;
     height: 100%;
 }
-#starcontextmenu {
-    width: auto;
-    left:50%;
-    top:25%;
+#starcontextmenu .modal-dialog {
+    width: 5em;
 }
 #updating {
     .alert {
