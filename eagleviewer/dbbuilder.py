@@ -4,6 +4,9 @@ import datetime
 import os
 import json
 import threading
+import logging
+
+logger = logging.getLogger(__name__)
 
 def addFolder(session, library, folders, parent):
     for f in folders:
@@ -66,9 +69,9 @@ class Worker:
 
     def builddb(self, path):
         decoder = json.JSONDecoder()
-        now = datetime.datetime.now()
         with Session(engine) as session:
             library = session.query(Libraries).filter(Libraries.path == path).one()
+            logger.debug(f"build DB start {self._start}:{library.lastupdate}")
             imagesdir = os.path.join(path, "images")
             with os.scandir(imagesdir) as it:
                 files = [entry.name for entry in it if entry.name.endswith('.info') and entry.is_dir()]
@@ -86,6 +89,7 @@ class Worker:
                 try:
                     sresult = os.stat(file)
                     if library.lastupdate == None or library.lastupdate.timestamp() < sresult.st_mtime:
+                        logger.debug(f"process {library.lastupdate.timestamp()}:{sresult.st_mtime}")
                         with open(file, encoding="utf-8") as f:
                             img = decoder.raw_decode(f.readline())[0]
                         addImages(session, img, library)
@@ -94,7 +98,7 @@ class Worker:
                 except:
                     pass
             self._progress = len(files)
-            library.lastupdate = now
+            library.lastupdate = self._start
             session.commit()
 
     def run(self, path):
@@ -113,8 +117,10 @@ class Worker:
                 self._thread = threading.Thread(target = threadmain, args = (self, path))
                 self._progress = 0
                 self._fullgage = 0
+                self._processed = 0
                 self._error = ""
                 self._abort = False
+                self._start = datetime.datetime.now()
                 try:
                     self._thread.start()
                 except Exception as e:
@@ -129,6 +135,7 @@ class Worker:
         if thread and thread.is_alive():
             thread.join(timeout)
         now = datetime.datetime.now()
+        logger.debug(f"build DB end {now}:{self._processed}")
         return { "error": self._error, "fullgage": self._fullgage, "aborted": self._abort,
                  "progress": self._progress, "running": thread.is_alive() if thread else False,
                  "processed": self._processed, "elapsed": str(now - self._start) }

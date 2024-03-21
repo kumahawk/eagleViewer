@@ -247,7 +247,7 @@ function updateprogress(json) {
     message.textContent = json.error;
     if(! json.running) {
         if(json.error == "") {
-            message.textContent = "更新完了"
+            message.textContent = "更新完了。処理:" + json.processed + "件。時間:" + json.elapsed;
         }
         button.textContent = "確認";
     }
