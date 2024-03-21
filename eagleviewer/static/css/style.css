@@ -134,7 +134,12 @@ form#search button {
     height: 100%;
 }
 #starcontextmenu .modal-dialog {
-    width: 5em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    .modal-content {
+        width: 5em;
+    }
 }
 #updating {
     .alert {
