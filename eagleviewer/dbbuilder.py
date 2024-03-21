@@ -59,8 +59,10 @@ class Worker:
     _thread = None
     _progress = 0
     _fullgage = 0
+    _processed = 0
     _error = ""
     _abort = False
+    _start = datetime.datetime.now()
 
     def builddb(self, path):
         decoder = json.JSONDecoder()
@@ -68,7 +70,8 @@ class Worker:
         with Session(engine) as session:
             library = session.query(Libraries).filter(Libraries.path == path).one()
             imagesdir = os.path.join(path, "images")
-            files = os.listdir(imagesdir)
+            with os.scandir(imagesdir) as it:
+                files = [entry.name for entry in it if entry.name.endswith('.info') and entry.is_dir()]
             self._fullgage = len(files)
             with open(os.path.join(path, "metadata.json"), encoding="utf-8") as f:
                 folders = decoder.raw_decode(f.readline())[0]
@@ -80,17 +83,19 @@ class Worker:
                     return
                 self._progress = i
                 file = os.path.join(imagesdir, files[i], "metadata.json")
-                if os.path.isfile(file):
+                try:
                     sresult = os.stat(file)
-                    with open(file, encoding="utf-8") as f:
-                        img = decoder.raw_decode(f.readline())[0]
-                    if img['isDeleted'] or library.lastupdate == None or library.lastupdate.timestamp() < sresult.st_mtime:
+                    if library.lastupdate == None or library.lastupdate.timestamp() < sresult.st_mtime:
+                        with open(file, encoding="utf-8") as f:
+                            img = decoder.raw_decode(f.readline())[0]
                         addImages(session, img, library)
                         session.flush()
+                        self._processed += 1
+                except:
+                    pass
             self._progress = len(files)
             library.lastupdate = now
             session.commit()
-
 
     def run(self, path):
         try:
@@ -123,8 +128,10 @@ class Worker:
         thread = self._thread
         if thread and thread.is_alive():
             thread.join(timeout)
+        now = datetime.datetime.now()
         return { "error": self._error, "fullgage": self._fullgage, "aborted": self._abort,
-                 "progress": self._progress, "running": thread.is_alive() if thread else False }
+                 "progress": self._progress, "running": thread.is_alive() if thread else False,
+                 "processed": self._processed, "elapsed": str(now - self._start) }
 
     def abort(self):
         self._abort = True
