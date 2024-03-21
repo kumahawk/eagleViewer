@@ -89,23 +89,24 @@
 </div>    
 </div>
 {% endblock %}
-{% block script %}
+{% block dialog %}
 <div id="starcontextmenu" class="modal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
             <ul class="list-group">
-                <li class="list-group-item" onclick="addStar(5)">星5</li>
-                <li class="list-group-item" onClick="addStar(4)">星4</li>
-                <li class="list-group-item" onClick="addStar(3)">星3</li>
-                <li class="list-group-item" onClick="addStar(2)">星2</li>
-                <li class="list-group-item" onClick="addStar(1)">星1</li>
-                <li class="list-group-item" onClick="addStar(0)">星0</li>
-                <li class="list-group-item" onClick="contextmenuclose()">閉じる</li>
+                <li class="list-group-item" data-bs-dismiss="modal" onclick="addStar(5)">星5</li>
+                <li class="list-group-item" data-bs-dismiss="modal" onClick="addStar(4)">星4</li>
+                <li class="list-group-item" data-bs-dismiss="modal" onClick="addStar(3)">星3</li>
+                <li class="list-group-item" data-bs-dismiss="modal" onClick="addStar(2)">星2</li>
+                <li class="list-group-item" data-bs-dismiss="modal" onClick="addStar(1)">星1</li>
+                <li class="list-group-item" data-bs-dismiss="modal" onClick="addStar(0)">星0</li>
+                <li class="list-group-item" data-bs-dismiss="modal" onClick="flipScreenMode();">戻る</li>
+                <li class="list-group-item" data-bs-dismiss="modal">閉じる</li>
             </ul>
         </div>
     </div>
-</div>
-<div id="updating" class="modal" tabindex="1">
+</div>    
+<div id="updating" class="modal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -122,6 +123,8 @@
         </div>
     </div>
 </div>
+{% endblock %}
+{% block script %}
 <script>
 var URLBASE = "{{- URLBASE -}}";
 </script>

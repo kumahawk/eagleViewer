@@ -1,8 +1,8 @@
-const myModalAlternative = new bootstrap.Modal('#starcontextmenu', {});
 const myUpdating = new bootstrap.Modal('#updating', {});
 const slide = document.getElementById('img_slide');
 const grid = document.getElementById('img_grids');
 const menu = document.getElementById("starcontextmenu");
+const myModalAlternative = new bootstrap.Modal(menu, {backdrop:true});
 const nextpanel = document.getElementById('img_next');
 const updating = document.getElementById("updating");
 const error = document.getElementById("errormessage");
@@ -21,10 +21,6 @@ function oncontextmenu(e) {
         }
     }
     myModalAlternative.show();
-}
-
-function contextmenuclose() {
-    myModalAlternative.hide();
 }
 
 function addStar(star) {
@@ -51,7 +47,6 @@ function addStar(star) {
             error.textContent = err;
         });
     }
-    myModalAlternative.hide();
 }
 
 function flipScreenMode(id = null) {
