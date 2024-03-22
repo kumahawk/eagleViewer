@@ -6,6 +6,7 @@ const myModalAlternative = new bootstrap.Modal(menu, {backdrop:true});
 const nextpanel = document.getElementById('img_next');
 const updating = document.getElementById("updating");
 const error = document.getElementById("errormessage");
+const navbar = document.getElementById("navbar")
 
 function oncontextmenu(e) {
     const star = document.querySelector(".carousel-item.active .img_star");
@@ -128,6 +129,7 @@ function flipScreenMode(id = null) {
     grid.classList.toggle('carousel-inner', tocarousel);
     slide.classList.toggle('carousel', tocarousel);
     slide.classList.toggle('slide', tocarousel);
+    navbar.classList.toggle('hidden', tocarousel)
     if(selected) {
         selected.scrollIntoView({block: 'start', behavior: 'instant'});
     }

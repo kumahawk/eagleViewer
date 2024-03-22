@@ -11,6 +11,10 @@ form#search button {
     display: none;
 }
 
+nav.hidden {
+    display: none;
+}
+
 .row .col {
     position: relative;
     .img_star::before {
