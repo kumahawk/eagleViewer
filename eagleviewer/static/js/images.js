@@ -23,8 +23,9 @@ function oncontextmenu(e) {
         }
     }
     myModalAlternative.show();
-    const x = e.clientX - menucontent.scrollWidth/2;
-    const y = e.clientY;
+    const clientRect = menucontent.parentElement.getBoundingClientRect() ;
+    const x = e.clientX - clientRect.left - menucontent.scrollWidth/2;
+    const y = e.clientY - clientRect.top;
     menucontent.style.left = x+"px";
     menucontent.style.top = y+"px";
 }
