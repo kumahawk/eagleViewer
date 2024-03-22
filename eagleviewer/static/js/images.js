@@ -2,6 +2,7 @@ const myUpdating = new bootstrap.Modal('#updating', {});
 const slide = document.getElementById('img_slide');
 const grid = document.getElementById('img_grids');
 const menu = document.getElementById("starcontextmenu");
+const menucontent = menu.querySelector('.modal-content');
 const myModalAlternative = new bootstrap.Modal(menu, {backdrop:true});
 const nextpanel = document.getElementById('img_next');
 const updating = document.getElementById("updating");
@@ -22,6 +23,10 @@ function oncontextmenu(e) {
         }
     }
     myModalAlternative.show();
+    const x = e.clientX - menucontent.scrollWidth/2;
+    const y = e.clientY;
+    menucontent.style.left = x+"px";
+    menucontent.style.top = y+"px";
 }
 
 function addStar(star) {

@@ -139,9 +139,10 @@ nav.hidden {
 }
 #starcontextmenu .modal-dialog {
     display: flex;
-    align-items: center;
-    justify-content: center;
+    /*align-items: center;
+    justify-content: center;*/
     .modal-content {
+        position: absolute;
         width: 5em;
     }
 }
