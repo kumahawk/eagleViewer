@@ -1,4 +1,4 @@
-const myUpdating = new bootstrap.Modal('#updating', {});
+const myUpdating = new bootstrap.Modal('#updating', {backdrop:"static"});
 const slide = document.getElementById('img_slide');
 const grid = document.getElementById('img_grids');
 const menu = document.getElementById("starcontextmenu");
@@ -272,7 +272,8 @@ function endupdating() {
         myUpdating.hide();
         progress.setAttribute("aria-valuenow", 0);
         progress.setAttribute("aria-valuemax", 100);
-        button.textContent = "中止";    
+        button.textContent = "中止";
+        location.reload();
     }
 }
 

@@ -83,6 +83,7 @@ class Worker:
             for i in range(len(files)):
                 if self._abort:
                     self._error = "中止しました"
+                    logger.debug(f"process abort {datetime.datetime.now}")
                     return
                 self._progress = i
                 file = os.path.join(imagesdir, files[i], "metadata.json")
@@ -100,6 +101,7 @@ class Worker:
             self._progress = len(files)
             library.lastupdate = self._start
             session.commit()
+            logger.debug(f"process end {datetime.datetime.now}")
 
     def run(self, path):
         try:
