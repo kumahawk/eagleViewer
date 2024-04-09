@@ -69,7 +69,7 @@ class Eagle:
         return i
     
     def buildconditions(self, folder, keyword, tags, skipuntil):
-        conditions = []
+        conditions = [Images.isDeleted == 0]
         if folder:
             if folder == ',':
                 conditions.append(~Images.folders_collection.any())
@@ -109,10 +109,7 @@ class Eagle:
     def loadimages(self, n=100, offset=0, folder=None, keyword=None, tags=None, skipuntil=None):
         session = self.getSession()
         conditions = self.buildconditions(folder, keyword, tags, skipuntil)
-        if conditions:
-            imgs = session.query(Images).filter(*conditions).order_by(desc(Images.id)).offset(offset).limit(n)
-        else:
-            imgs = session.query(Images).order_by(desc(Images.id)).offset(offset).limit(n)
+        imgs = session.query(Images).filter(*conditions).order_by(desc(Images.id)).offset(offset).limit(n)
         result = []
         for img in imgs:
             i = {key:getattr(img, key) for key in ('id','name','ext','noThumbnail','annotation','star')}
@@ -190,6 +187,21 @@ class Eagle:
             image = session.get(Images, id)
             if image:
                 image.star = req['star']
+                session.commit()
+        return json.loads(response.text)
+
+    def delete(self, id, req):
+        req["itemIds"] = [id]
+        response = requests.post(
+            "http://localhost:41595/api/item/moveToTrash",
+            data=json.dumps(req),
+            headers={"Content-Type": "application/json"}
+        )
+        if response.status_code == requests.codes.ok:
+            session = self.getSession()
+            image = session.get(Images, id)
+            if image:
+                session.delete(image)
                 session.commit()
         return json.loads(response.text)
 

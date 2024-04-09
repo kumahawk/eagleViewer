@@ -90,7 +90,6 @@ class Worker:
                 try:
                     sresult = os.stat(file)
                     if library.lastupdate == None or library.lastupdate.timestamp() < sresult.st_mtime:
-                        logger.debug(f"process {library.lastupdate.timestamp()}:{sresult.st_mtime}")
                         with open(file, encoding="utf-8") as f:
                             img = decoder.raw_decode(f.readline())[0]
                         addImages(session, img, library)
@@ -101,7 +100,7 @@ class Worker:
             self._progress = len(files)
             library.lastupdate = self._start
             session.commit()
-            logger.debug(f"process end {datetime.datetime.now}")
+            logger.debug(f"process end {datetime.datetime.now()}")
 
     def run(self, path):
         try:
