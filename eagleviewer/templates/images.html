@@ -63,6 +63,7 @@
     <a onclick='onimageclick(event, "{{- img.id -}}");'><img class="img-thumbnail" src="{{- URLBASE -}}/images/{{- img.id -}}/{{- img.thumbname -}}" width="{{- img.thumbwidth -}}px" height="{{- img.thumbheight -}}px"
         {% if img.noThumbnail %}data-rsrc="{{- URLBASE -}}/images/{{- img.id -}}/{{- img.name -}}.{{- img.ext -}}"{% endif %}></a>
     <div class="img_infos">
+        <div class="img_delete badge text-bg-danger">{{- "削除" if img.isDeleted -}}</div>
         <div class="img_star badge bg-dark">{{- img.star if img.star -}}</div>
         <div class="img_folders">
             {% for fld in img.folders -%}<div class="img_folder badge bg-info">{{- fld -}}</div>{% endfor -%}
@@ -101,6 +102,7 @@
                 <li class="list-group-item" data-bs-dismiss="modal" onClick="addStar(1)">星1</li>
                 <li class="list-group-item" data-bs-dismiss="modal" onClick="addStar(0)">星0</li>
                 <li class="list-group-item" data-bs-dismiss="modal" onClick="flipScreenMode();">一覧</li>
+                <li class="list-group-item" data-bs-dismiss="modal" onClick="deleteImage()">削除</li>
             </ul>
         </div>
     </div>

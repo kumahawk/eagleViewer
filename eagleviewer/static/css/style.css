@@ -32,6 +32,17 @@ nav.hidden {
     .img_star:empty {
         display: none;
     }
+    .img_delete {
+        position: absolute;
+        display: inline-block;
+        left: 0em;
+        bottom: 0em;
+        text-align: left;
+        width: auto;
+    }
+    .img_delete:empty {
+        display: none;
+    }
     .img_folders {
         position: absolute;
         display: inline-block;

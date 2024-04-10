@@ -55,6 +55,32 @@ function addStar(star) {
         });
     }
 }
+function deleteImage() {
+    if(! window.confirm("削除しますか?")) {
+        return;
+    }
+    const a = document.querySelector(".carousel-item.active");
+    if(a && a.id.startsWith('img_')) {
+        error.textContent = "";
+        const id = a.id.substring('img_'.length);
+        const obj = {};
+        const body = JSON.stringify(obj);
+        const headers = {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        };
+        url = URLBASE + '/eagle/delete/' + id;
+        fetch(url, {method: "POST", headers: headers, body: body}).then((res) => {
+            return res.json();
+        }).then((json) => {
+            deleteElement = a.querySelector(".img_delete");
+            deleteElement.textContent = "削除";
+        })
+        .catch((err) => {
+            error.textContent = err;
+        });
+    }
+}
 
 function flipScreenMode(id = null) {
     const tocarousel = !slide.classList.contains('carousel');
@@ -148,6 +174,32 @@ function onimageclick(e, id) {
     }
     else {
         flipScreenMode(id);        
+    }
+}
+
+function onkeydown(e) {
+    const iscarousel = slide.classList.contains('carousel');
+    if(iscarousel) {
+        if (e.code == 'Escape') {
+            flipScreenMode(null);        
+        }
+        else if (e.code == 'Delete') {
+            deleteImage(id);        
+        }
+        else if (e.code.startsWith('Digit')) {
+            n = Number(e.code.substring('Digit'.length));
+            if(0 <= n && n <= 5) {
+                addStar(n);
+            }
+            else {
+                return;
+            }
+        }
+        else {
+            return;
+        }
+        e.stopPropagation();
+        e.preventDefault();
     }
 }
 
@@ -310,3 +362,4 @@ function onload(event) {
 }
 
 window.addEventListener("load", function(event) { this.onload(event); }, false);
+document.addEventListener("keydown", onkeydown, false)
