@@ -5,6 +5,9 @@ from sqlalchemy.orm import Session
 from sqlalchemy import desc
 from .eagledb import engine, Images, Folders, Tags, Libraries
 from . import dbbuilder
+import logging
+
+logger = logging.getLogger(__name__)
 
 MAXMETRIC = 256
 
@@ -14,10 +17,15 @@ class Eagle:
 
     def __init__(self, data = None):
         self.load(data)
-    
-    def __del__(self):
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self ,type, value, traceback):
         if self._session:
             self._session.close()
+        self._session = None
+        return type is not None
 
     def getSession(self):
         if not self._session:
