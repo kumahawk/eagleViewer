@@ -184,7 +184,7 @@ function onkeydown(e) {
             flipScreenMode(null);        
         }
         else if (e.code == 'Delete') {
-            deleteImage(id);        
+            deleteImage(null);
         }
         else if (e.code.startsWith('Digit')) {
             n = Number(e.code.substring('Digit'.length));
