@@ -210,6 +210,7 @@ const templ = Handlebars.compile(
     {{#if noThumbnail }}data-rsrc="{{URLBASE}}/images/{{id}}/{{name}}.{{ext}}"{{/if}}>
     </a>
     <div class="img_infos">
+    <div class="img_delete badge text-bg-danger">{{- "削除" if img.isDeleted -}}</div>
     <div class="img_star badge bg-dark">{{#if star}}{{star}}{{/if}}</div>
     <div class="img_folders">
     {{#each folders}}<div class="img_folder badge bg-info">{{this}}</div>{{/each}}
