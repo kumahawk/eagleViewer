@@ -49,8 +49,8 @@ def addImages(session, i, library):
     img.noThumbnail = i.get("noThumbnail", False)
     img.lastModified = datetime.datetime.fromtimestamp(i["lastModified"]/1000)
     img.star = i.get("star")
-    img.tags_collection = [addTags(session, tag, library) for tag in i["tags"]]
-    img.folders_collection = [session.get(Folders, fid) for fid in i["folders"]]
+    img.tags_collection = [addTags(session, tag, library) for tag in i["tags"] if addTags(session, tag, library)]
+    img.folders_collection = [session.get(Folders, fid) for fid in i["folders"] if session.get(Folders, fid)]
     img.isDeleted = i["isDeleted"]
 
 def threadmain(me, path):
